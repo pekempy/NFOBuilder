@@ -10,6 +10,7 @@ using std::cout; using std::vector;
 using std::string; using std::endl;
 using std::copy;
 
+//global strings
 string showName;
 string showDate;
 string showYear;
@@ -19,18 +20,24 @@ string showPlot;
 string showPosterURL;
 string castList;
 string actorXmlString;
-string castMember = "<actor>\n"
-                    "   <name>str1</name>\n"
-                    "   <role>str2</role>\n"
-                    "   <thumb>str3</thumb>\n"
-                    "   <type>Actor</type>\n"
-                    "</actor>\n";
+string castMember = "  <actor>\n"
+                    "       <name>str1</name>\n"
+                    "       <role>str2</role>\n"
+                    "       <thumb>str3</thumb>\n"
+                    "       <type>Actor</type>\n"
+                    "   </actor>";
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+
+    //restrict date input to YYYY-MM-DD.
+    QRegularExpression re("^\\d{4}[\\-\\/\\s]?((((0[13578])|(1[02]))[\\-\\/\\s]?(([0-2][0-9])|(3[01])))|(((0[469])|(11))[\\-\\/\\s]?(([0-2][0-9])|(30)))|(02[\\-\\/\\s]?[0-2][0-9]))$");
+    QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
+    ui->showDateInput->setValidator(validator);
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +45,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//Build the XML and return
 string buildXML(){
     string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
@@ -57,50 +65,47 @@ string buildXML(){
                         "   <art>\n"
                         "       <poster>" + showPosterURL + "</poster>\n"
                         "   </art>\n";
-    string xmlPart2 = "<actor><name>Bob</name><role>Derek</role><thumb>https://upload.wikimedia.org/wikipedia/commons/f/fe/Michelle_Borromeo_Actor_Headshots_30.jpg</thumb><type>Actor</type></actor>\n";
+    string xmlPart2 = actorXmlString;
     string xmlPart3 =   "</movie>";
     return xmlPart1 + xmlPart2 + xmlPart3;
 }
 
 
 
-void MainWindow::on_CreateNFO_clicked()
-{
-    //ui->showNameInput->setText("Hello World");
-
-    //Loop to create XML for cast
-    for (int i=0; i < ui->castTable->rowCount(); i++) {
-        for (int j = 0; j < ui->castTable->columnCount(); j++){
-            QTableWidgetItem *item =  ui->castTable->item(i,j);
-            if(j==0) {
-                castMember.find("str1");
-                castMember.replace(castMember.find("str1"),4,item->text().toStdString());
-            }
-            else if (j==1) {
-                castMember.find("str2");
-                castMember.replace(castMember.find("str2"),4,item->text().toStdString());
-            }
-            else if (j==2) {
-                castMember.find("str3");
-                castMember.replace(castMember.find("str3"),4,item->text().toStdString());
-                actorXmlString.append(castMember + "\n");
-            }
+void MainWindow::on_CreateNFO_clicked() {
+  //Loop to create XML for cast information
+  for (int i = 0; i < ui -> castTable -> rowCount(); i++) {
+    for (int j = 0; j < ui -> castTable -> columnCount(); j++) {
+      if (QTableWidgetItem * item = ui -> castTable -> item(i, j)) {
+        if (j == 0) {
+          castMember.find("str1");
+          castMember.replace(castMember.find("str1"), 4, item -> text().toStdString());
         }
-        castMember = "<actor>\n"
-                    "   <name>str1</name>\n"
-                    "   <role>str2</role>\n"
-                    "   <thumb>str3</thumb>\n"
-                    "   <type>Actor</type>\n"
-                    "</actor>\n";
+        else if (j == 1) {
+          castMember.find("str2");
+          castMember.replace(castMember.find("str2"), 4, item -> text().toStdString());
+        }
+        else if (j == 2) {
+          castMember.find("str3");
+          castMember.replace(castMember.find("str3"), 4, item -> text().toStdString());
+          actorXmlString.append(castMember + "\n");
+        }
+      }
     }
+    castMember = "  <actor>\n"
+                 "       <name>str1</name>\n"
+                 "       <role>str2</role>\n"
+                 "       <thumb>str3</thumb>\n"
+                 "       <type>Actor</type>\n"
+                 "   </actor>";
+  }
 
-
-    string output = buildXML();
-    if (showName != ""){
-        cout << output;
-        ui->outputTextArea->setText(QString::fromStdString(output));
-    }
-    clearAllValues();
+  string output = buildXML();
+  if (showName != "") {
+    cout << output;
+    ui -> outputTextArea -> setText(QString::fromStdString(output));
+  }
+  clearAllValues();
 }
 
 //Set variables upon text changed for each section.
@@ -112,6 +117,11 @@ void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 {
     showDate = arg1.toStdString();
+    //also get year from date
+    if(arg1.toStdString().length() == 10){
+        showYear = arg1.toStdString().erase(arg1.toStdString().length()-6);
+    }
+
 }
 
 void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
@@ -135,12 +145,7 @@ void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
 }
 
 void MainWindow::clearAllValues(){
-    ui->showNameInput->setText("");
-    ui->showDateInput->setText("");
-    ui->showLocationInput->setText("");
-    ui->showTaglineInput->setText("");
-    ui->showSynopsisInput->setText("");
-    ui->showPosterInput->setText("");
+    //clear global strings
     showName = "";
     showDate = "";
     showYear = "";
@@ -149,4 +154,13 @@ void MainWindow::clearAllValues(){
     showPlot = "";
     showPosterURL = "";
     actorXmlString = "";
+
+    //clear UI values
+    ui->showNameInput->setText("");
+    ui->showDateInput->setText("");
+    ui->showLocationInput->setText("");
+    ui->showTaglineInput->setText("");
+    ui->showSynopsisInput->setText("");
+    ui->showPosterInput->setText("");
+    ui->castTable->clearContents();
 }
