@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Bootleg NFO Builder for Plex</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/bootleg.png</normaloff>:/resources/bootleg.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
@@ -205,6 +209,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

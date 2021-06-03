@@ -6,9 +6,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-using std::cout; using std::vector;
-using std::string; using std::endl;
-using std::copy;
+using std::vector; using std::string;
+using std::endl; using std::copy;
 
 //global strings
 string showName;
@@ -102,7 +101,6 @@ void MainWindow::on_CreateNFO_clicked() {
 
   string output = buildXML();
   if (showName != "") {
-    cout << output;
     ui -> outputTextArea -> setText(QString::fromStdString(output));
   }
   clearAllValues();
