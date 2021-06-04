@@ -1,5 +1,5 @@
 # NFOBuilder
-Create NFOs for Bootlegs compatible with Plex, to allow for full cast information and show details!
+Create NFOs for theatrical perfoamcnes compatible with Plex, to allow for full cast information and show details!
 
 ![The program](https://camo.githubusercontent.com/158785c6299d7cf03aa0260ed576b3a15270a72af2925e6f8f0fd2b715f40a7c/68747470733a2f2f692e696d6775722e636f6d2f317146796666392e706e67)
 ![Example of a show in Plex](https://i.imgur.com/QSJXfg6.png)
