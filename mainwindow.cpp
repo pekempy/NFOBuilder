@@ -5,6 +5,7 @@
 #include <fstream>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -198,5 +199,38 @@ void MainWindow::clearAllValues(){
     ui->castTable->clearContents();
 }
 
+void MainWindow::on_castTable_cellChanged(int row, int column)
+{
+    string test;
+    //when each row, column a changed, update link in column 4 for that row.
+    if(column != 3) {
+        for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
+            //for each row
+            if (i == row && column != 3) {
+                //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
+                QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
+                if(!cellLink){
+                    cellLink = new QTableWidgetItem();
+                    ui -> castTable -> setItem(i,3,cellLink);
+                }
+                QTableWidgetItem * actor = ui -> castTable -> item(i, 0);
+                string actorName = actor->text().toStdString();
+                string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
+                cellLink->setText(QString::fromStdString(url));
+            }
+        }
+    }
+}
 
+
+void MainWindow::on_castTable_cellClicked(int row, int column)
+{
+    string urlToOpen = "";
+    if(column == 3){
+        urlToOpen = ui->castTable->item(row,column)->text().toStdString();
+    }
+    if (urlToOpen != ""){
+        QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
+    }
+}
 

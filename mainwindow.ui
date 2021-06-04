@@ -169,7 +169,15 @@
         <string>Headshot URL</string>
        </property>
       </column>
+      <column>
+       <property name="text">
+        <string>CLICK to search images</string>
+       </property>
+      </column>
       <item row="0" column="0">
+       <property name="text">
+        <string/>
+       </property>
        <property name="flags">
         <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsDropEnabled|ItemIsEnabled</set>
        </property>
@@ -186,7 +194,7 @@
     <item>
      <widget class="QLineEdit" name="outputFolderInput">
       <property name="placeholderText">
-       <string>e.g C:\Users\pete\Desktop\     &lt;- Keep the trailing backslash!</string>
+       <string>e.g C:/Users/Pete/Desktop</string>
       </property>
      </widget>
     </item>

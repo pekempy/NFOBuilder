@@ -34,6 +34,10 @@ private slots:
 
     void on_outputFolderInput_editingFinished();
 
+    void on_castTable_cellChanged(int row, int column);
+
+    void on_castTable_cellClicked(int row, int column);
+
 private:
     Ui::MainWindow *ui;
     void clearAllValues();
