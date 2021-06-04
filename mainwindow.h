@@ -30,6 +30,8 @@ private slots:
 
     void on_showPosterInput_textChanged(const QString &arg1);
 
+    void on_outputFolderInput_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     void clearAllValues();

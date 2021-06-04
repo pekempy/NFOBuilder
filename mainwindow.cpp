@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iterator>
+#include <fstream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -25,6 +26,7 @@ string castMember = "  <actor>\n"
                     "       <thumb>str3</thumb>\n"
                     "       <type>Actor</type>\n"
                     "   </actor>";
+string outputFolder;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -101,7 +103,11 @@ void MainWindow::on_CreateNFO_clicked() {
 
   string output = buildXML();
   if (showName != "") {
-    ui -> outputTextArea -> setText(QString::fromStdString(output));
+    //ui -> outputTextArea -> setText(QString::fromStdString(output));
+     std::ofstream myfile;
+     myfile.open(outputFolder + showName + "-" + showDate + ".nfo");
+     myfile << output;
+     myfile.close();
   }
   clearAllValues();
 }
@@ -142,6 +148,11 @@ void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
     showPosterURL = arg1.toStdString();
 }
 
+void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
+{
+    outputFolder = arg1.toStdString();
+}
+
 void MainWindow::clearAllValues(){
     //clear global strings
     showName = "";
@@ -162,3 +173,4 @@ void MainWindow::clearAllValues(){
     ui->showPosterInput->setText("");
     ui->castTable->clearContents();
 }
+

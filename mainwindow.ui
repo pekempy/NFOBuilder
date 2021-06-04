@@ -14,7 +14,7 @@
    <string>Bootleg NFO Builder for Plex</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="resources.qrc">
+   <iconset>
     <normaloff>:/resources/bootleg.png</normaloff>:/resources/bootleg.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -177,9 +177,16 @@
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="outputTextArea">
+     <widget class="QLabel" name="outputFolderLabel">
+      <property name="text">
+       <string>Output folder</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="outputFolderInput">
       <property name="placeholderText">
-       <string>Output will be here.</string>
+       <string>e.g C:\Users\pete\Desktop\     &lt;- Keep the trailing backslash!</string>
       </property>
      </widget>
     </item>
@@ -199,7 +206,7 @@
      <x>0</x>
      <y>0</y>
      <width>811</width>
-     <height>20</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>
@@ -209,8 +216,6 @@
    </property>
   </action>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
