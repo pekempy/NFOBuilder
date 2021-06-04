@@ -9,5 +9,5 @@ A Plex library with [XBMCnfoMoviesImporter](https://github.com/gboudreau/XBMCnfo
 This allows Plex to look for local NFO files to fetch metadata from. You can also then "Match" with the NFO 
 
 
-#Instructions
+# Instructions
 Please see the [Wiki](https://github.com/pekempy/NFOBuilder/wiki) for instructions on how to use this
