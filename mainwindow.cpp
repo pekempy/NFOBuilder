@@ -166,6 +166,17 @@ void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
     outputFolder = arg1.toStdString();
 }
 
+void MainWindow::on_outputFolderInput_editingFinished()
+{
+    //check if last char is '\' if not add it.
+    char last = outputFolder.back();
+    if(last != '/') {
+        outputFolder = outputFolder + '/';
+        ui->outputFolderInput->setText(QString::fromStdString(outputFolder));
+    }
+}
+
+
 void MainWindow::clearAllValues(){
     //clear global strings
     showName = "";
@@ -186,4 +197,6 @@ void MainWindow::clearAllValues(){
     ui->showPosterInput->setText("");
     ui->castTable->clearContents();
 }
+
+
 

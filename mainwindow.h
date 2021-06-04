@@ -32,6 +32,8 @@ private slots:
 
     void on_outputFolderInput_textChanged(const QString &arg1);
 
+    void on_outputFolderInput_editingFinished();
+
 private:
     Ui::MainWindow *ui;
     void clearAllValues();
