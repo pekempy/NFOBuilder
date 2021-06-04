@@ -3,6 +3,8 @@
 #include <vector>
 #include <iterator>
 #include <fstream>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -71,7 +73,11 @@ string buildXML(){
     return xmlPart1 + xmlPart2 + xmlPart3;
 }
 
-
+bool fileExists(QString handle){
+    QFileInfo check_file(handle);
+    if(check_file.exists() && check_file.isFile())
+       { return true; } else { return false; }
+    }
 
 void MainWindow::on_CreateNFO_clicked() {
   //Loop to create XML for cast information
@@ -105,9 +111,16 @@ void MainWindow::on_CreateNFO_clicked() {
   if (showName != "") {
     //ui -> outputTextArea -> setText(QString::fromStdString(output));
      std::ofstream myfile;
-     myfile.open(outputFolder + showName + "-" + showDate + ".nfo");
+     string fileName = outputFolder + showName + "-" + showDate + ".nfo";
+     QString qsFileName = QString::fromStdString(fileName);
+     myfile.open(fileName);
      myfile << output;
      myfile.close();
+     if (fileExists(qsFileName)) {
+        QMessageBox msg;
+        msg.setText("Successfully created: " + qsFileName);
+        msg.exec();
+    }
   }
   clearAllValues();
 }
