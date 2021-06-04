@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>resources/bootleg.png</file>
-        <file>resources/bootleg.ico</file>
-    </qresource>
-</RCC>
