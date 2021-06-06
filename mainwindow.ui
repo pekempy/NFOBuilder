@@ -120,7 +120,7 @@
     <item>
      <widget class="QTableWidget" name="castTable">
       <property name="rowCount">
-       <number>20</number>
+       <number>40</number>
       </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>false</bool>
@@ -134,6 +134,26 @@
       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
        <bool>false</bool>
       </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
       <row/>
       <row/>
       <row/>

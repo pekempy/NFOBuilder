@@ -197,6 +197,9 @@ void MainWindow::clearAllValues(){
     ui->showSynopsisInput->setText("");
     ui->showPosterInput->setText("");
     ui->castTable->clearContents();
+
+    //jump to top of cast table
+    ui->castTable->scrollToTop();
 }
 
 void MainWindow::on_castTable_cellChanged(int row, int column)
