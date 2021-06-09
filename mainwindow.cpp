@@ -204,7 +204,6 @@ void MainWindow::clearAllValues(){
 
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
-    string test;
     //when each row, column a changed, update link in column 4 for that row.
     if(column != 3) {
         for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
@@ -229,11 +228,16 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
 void MainWindow::on_castTable_cellClicked(int row, int column)
 {
     string urlToOpen = "";
-    if(column == 3){
-        urlToOpen = ui->castTable->item(row,column)->text().toStdString();
-    }
-    if (urlToOpen != ""){
-        QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
-    }
+    QString actorName = "";
+    QTableWidgetItem * actor = ui -> castTable -> item(row, 0);
+    actorName = actor->text();
+        if (actorName != QString::fromStdString("")) {
+            if(column == 3){
+                urlToOpen = ui->castTable->item(row,column)->text().toStdString();
+            }
+            if (urlToOpen != ""){
+                QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
+            }
+        }
 }
 
