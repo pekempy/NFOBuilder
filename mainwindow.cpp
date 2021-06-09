@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    QFormLayout * centralWidget = ui->formLayout;
+    centralWidget->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
 
     //restrict date input to YYYY-MM-DD.
     QRegularExpression re("^\\d{4}[\\-\\/\\s]?((((0[13578])|(1[02]))[\\-\\/\\s]?(([0-2][0-9])|(3[01])))|(((0[469])|(11))[\\-\\/\\s]?(([0-2][0-9])|(30)))|(02[\\-\\/\\s]?[0-2][0-9]))$");
