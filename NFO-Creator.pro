@@ -18,7 +18,17 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
+# Icon Rules
+ICON = "resources/plex-nfo.ico"
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    resources/plex-nfo.ico \
+    resources/plex-nfo.png
+
+RESOURCES += \
+    resources.qrc

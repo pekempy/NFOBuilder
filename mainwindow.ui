@@ -7,15 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>865</width>
-    <height>822</height>
+    <height>868</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>NFO Builder for Plex</string>
+   <string>NFOBuilder for Plex</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>:/resources/bootleg.png</normaloff>:/resources/bootleg.png</iconset>
+   <iconset resource="resources.qrc">
+    <normaloff>:/resources/plex-nfo.ico</normaloff>:/resources/plex-nfo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="layoutDirection">
@@ -437,7 +437,7 @@
      <x>0</x>
      <y>0</y>
      <width>865</width>
-     <height>30</height>
+     <height>32</height>
     </rect>
    </property>
   </widget>
@@ -447,6 +447,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

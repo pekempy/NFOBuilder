@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/bootleg.png</file>
-        <file>resources/bootleg.ico</file>
+        <file>resources/plex-nfo.png</file>
+        <file>resources/plex-nfo.ico</file>
     </qresource>
 </RCC>
