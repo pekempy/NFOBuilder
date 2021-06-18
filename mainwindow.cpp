@@ -199,6 +199,17 @@ void MainWindow::clearAllValues(){
     ui->showPosterInput->setText("");
     ui->castTable->clearContents();
 
+    //set column 0 in cast table contents to ""
+    for (int i = 0; i < ui->castTable->rowCount(); i++) {
+        //i = row
+        QTableWidgetItem * actorCell = ui->castTable->item(i,0);
+        if(!actorCell){
+            actorCell = new QTableWidgetItem();
+            ui->castTable->setItem(i, 0, actorCell);
+            ui->castTable->setItem(i, 3, NULL);
+        }
+    }
+
     //jump to top of cast table
     ui->castTable->scrollToTop();
 }
@@ -206,7 +217,7 @@ void MainWindow::clearAllValues(){
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
     //when each row, column a changed, update link in column 4 for that row.
-    if(column != 3) {
+    if(column == 0) {
         for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
             //for each row
             if (i == row && column != 3) {
