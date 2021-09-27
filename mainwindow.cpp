@@ -6,8 +6,11 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QDebug>
+#include <QList>
 
 #include "mainwindow.h"
+#include "image_search.h"
 #include "ui_mainwindow.h"
 
 using std::vector; using std::string;
@@ -34,11 +37,11 @@ string outputFolder;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 {
     ui->setupUi(this);
     QFormLayout * centralWidget = ui->formLayout;
     centralWidget->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-
     //restrict date input to YYYY-MM-DD.
     QRegularExpression re("^\\d{4}[\\-\\/\\s]?((((0[13578])|(1[02]))[\\-\\/\\s]?(([0-2][0-9])|(3[01])))|(((0[469])|(11))[\\-\\/\\s]?(([0-2][0-9])|(30)))|(02[\\-\\/\\s]?[0-2][0-9]))$");
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
@@ -50,9 +53,37 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::linkChangedHandler(const QString &actorName, const QString &url) {
+    actorNameFromDialog = actorName;
+    downloadLinkFromDialog = url;
+    //find actor name in table and add the link
+    auto table = ui->castTable;
+    //QTextStream out(stderr);
+    int actorRow;
+    for (int col = 0; col<table->columnCount(); col++) {
+        QModelIndexList results = table->model()->match(
+                    table->model()->index(0, col),
+                    Qt::DisplayRole,
+                    actorName,
+                    -1,
+                    Qt::MatchContains);
+        for (QModelIndex idx:results)
+            actorRow = idx.row();
+    }
+    QTableWidgetItem * dlLink = ui->castTable->item(actorRow,2);
+    if(!dlLink) {
+        dlLink = new QTableWidgetItem();
+        ui->castTable->setItem(actorRow,2,dlLink);
+    }
+    dlLink->setText(downloadLinkFromDialog);
+    downloadLinkFromDialog = "";
+    actorNameFromDialog = "";
+}
+
+
 //Build the XML and return
 string buildXML(){
-    string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
+    string xmlPart1 =   "<?xml versiQDesktopServiceson=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
                         "   <title>" + showName + "</title>\n"
                         "   <originaltitle>" + showName + "</originaltitle>\n"
@@ -64,7 +95,7 @@ string buildXML(){
                         "   <outline>" + showTag + "</outline>\n"
                         "   <tagline>" + showTag + "</tagline>\n"
                         "   <plot>" + showPlot + "</plot>\n"
-                        "   <lockdata>false</lockdata>\n"
+                        "   <lockdata>true</lockdata>\n"
                         "   <genre>Musical</genre>\n"
                         "   <genre>Musical Theatre</genre>\n"
                         "   <art>\n"
@@ -113,7 +144,9 @@ void MainWindow::on_CreateNFO_clicked() {
   if (showName != "") {
     //ui -> outputTextArea -> setText(QString::fromStdString(output));
      std::ofstream myfile;
-     string fileName = outputFolder + showName + "-" + showDate + ".nfo";
+     string showNameEscaped = showName;
+     std::replace(begin(showNameEscaped),end(showNameEscaped),':','-');
+     string fileName = outputFolder + showNameEscaped + "-" + showDate + ".nfo";
      QString qsFileName = QString::fromStdString(fileName);
      myfile.open(fileName);
      myfile << output;
@@ -223,33 +256,30 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
             if (i == row && column != 3) {
                 //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
                 QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
+                QPushButton * cellLinkBtn = new QPushButton();
                 if(!cellLink){
-                    cellLink = new QTableWidgetItem();
-                    ui -> castTable -> setItem(i,3,cellLink);
+                    //cellLink = new QTableWidgetItem();
+                    //ui -> castTable -> setItem(i,3,cellLink);
+                    ui -> castTable -> setCellWidget(i, 3, cellLinkBtn);
                 }
                 QTableWidgetItem * actor = ui -> castTable -> item(i, 0);
                 string actorName = actor->text().toStdString();
-                string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
-                cellLink->setText(QString::fromStdString(url));
+                //string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
+                //cellLink->setText(QString::fromStdString(url));
+                cellLinkBtn->setText(QString::fromStdString(actorName));
+                cellLinkBtn->connect(cellLinkBtn, SIGNAL(clicked()), this, SLOT(actorButtonClicked()));
             }
         }
     }
 }
 
-
-void MainWindow::on_castTable_cellClicked(int row, int column)
-{
-    string urlToOpen = "";
-    QString actorName = "";
-    QTableWidgetItem * actor = ui -> castTable -> item(row, 0);
-    actorName = actor->text();
-        if (actorName != QString::fromStdString("")) {
-            if(column == 3){
-                urlToOpen = ui->castTable->item(row,column)->text().toStdString();
-            }
-            if (urlToOpen != ""){
-                QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
-            }
-        }
+void MainWindow::actorButtonClicked() {
+    auto button = qobject_cast<QPushButton *>(sender());
+    QString actorName = button->text();
+    QString URL = "https://www.qwant.com/?l=en&t=images&q=";
+    URL += actorName + " acting headshot";
+    image_search imageSearch(actorName, URL, this);
+    imageSearch.setModal(true);
+    imageSearch.exec();
 }
 

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "image_search.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -12,8 +13,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    image_search *imageSearch;
+
+public slots:
+    void linkChangedHandler(const QString &actorName, const QString &url);
 
 private slots:
     void on_CreateNFO_clicked();
@@ -36,10 +41,12 @@ private slots:
 
     void on_castTable_cellChanged(int row, int column);
 
-    void on_castTable_cellClicked(int row, int column);
+    void actorButtonClicked();
 
 private:
     Ui::MainWindow *ui;
     void clearAllValues();
+    QString actorNameFromDialog;
+    QString downloadLinkFromDialog;
 };
 #endif // MAINWINDOW_H

@@ -1,7 +1,9 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+QT += network
+QT += webkitwidgets
+QT += xml
 CONFIG += c++11
 
 QMAKE_INFO_PLIST
@@ -11,13 +13,18 @@ QMAKE_INFO_PLIST
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    filedownloader.cpp \
+    image_search.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    filedownloader.h \
+    image_search.h \
     mainwindow.h
 
 FORMS += \
+    image_search.ui \
     mainwindow.ui
 
 # Icon Rules
