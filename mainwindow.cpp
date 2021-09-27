@@ -239,9 +239,13 @@ void MainWindow::clearAllValues(){
         if(!actorCell){
             actorCell = new QTableWidgetItem();
             ui->castTable->setItem(i, 0, actorCell);
-            ui->castTable->setItem(i, 3, NULL);
+        }
+        QTableWidgetItem * buttonCell = ui->castTable->item(i,3);
+        if(!buttonCell) {
+            ui->castTable->clearContents();
         }
     }
+
 
     //jump to top of cast table
     ui->castTable->scrollToTop();

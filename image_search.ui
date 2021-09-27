@@ -27,8 +27,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>784</width>
-        <height>544</height>
+        <width>763</width>
+        <height>744</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -60,10 +60,16 @@
          </item>
          <item row="1" column="2">
           <widget class="QLabel" name="img1">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>120</width>
-             <height>120</height>
+             <width>16777215</width>
+             <height>150</height>
             </size>
            </property>
            <property name="text">
@@ -79,10 +85,16 @@
          </item>
          <item row="5" column="3">
           <widget class="QLabel" name="img12">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>120</width>
-             <height>120</height>
+             <width>16777215</width>
+             <height>150</height>
             </size>
            </property>
            <property name="text">
@@ -140,6 +152,12 @@
          </item>
          <item row="1" column="3">
           <widget class="QLabel" name="img2">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -159,6 +177,12 @@
          </item>
          <item row="3" column="2">
           <widget class="QLabel" name="img6">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -178,6 +202,12 @@
          </item>
          <item row="7" column="5">
           <widget class="QLabel" name="img19">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -194,6 +224,12 @@
          </item>
          <item row="7" column="3">
           <widget class="QLabel" name="img17">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -217,10 +253,16 @@
          </item>
          <item row="3" column="6">
           <widget class="QLabel" name="img10">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>120</width>
-             <height>120</height>
+             <width>16777215</width>
+             <height>150</height>
             </size>
            </property>
            <property name="text">
@@ -236,6 +278,12 @@
          </item>
          <item row="3" column="3">
           <widget class="QLabel" name="img7">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -269,10 +317,16 @@
          </item>
          <item row="5" column="2">
           <widget class="QLabel" name="img11">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
-             <width>120</width>
-             <height>120</height>
+             <width>16777215</width>
+             <height>150</height>
             </size>
            </property>
            <property name="text">
@@ -302,6 +356,12 @@
          </item>
          <item row="7" column="4">
           <widget class="QLabel" name="img18">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -332,6 +392,12 @@
          </item>
          <item row="3" column="5">
           <widget class="QLabel" name="img9">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -358,6 +424,12 @@
          </item>
          <item row="5" column="5">
           <widget class="QLabel" name="img14">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -377,6 +449,12 @@
          </item>
          <item row="5" column="6">
           <widget class="QLabel" name="img15">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -396,6 +474,12 @@
          </item>
          <item row="5" column="4">
           <widget class="QLabel" name="img13">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -415,6 +499,12 @@
          </item>
          <item row="7" column="6">
           <widget class="QLabel" name="img20">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -452,6 +542,12 @@
          </item>
          <item row="7" column="2">
           <widget class="QLabel" name="img16">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -468,6 +564,12 @@
          </item>
          <item row="1" column="6">
           <widget class="QLabel" name="img5">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -487,6 +589,12 @@
          </item>
          <item row="1" column="4">
           <widget class="QLabel" name="img3">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -506,6 +614,12 @@
          </item>
          <item row="1" column="5">
           <widget class="QLabel" name="img4">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -525,6 +639,12 @@
          </item>
          <item row="3" column="4">
           <widget class="QLabel" name="img8">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
            <property name="maximumSize">
             <size>
              <width>16777215</width>
