@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=NFO Builder
+Exec=AppRun %F
+Icon=default
+Comment=Create NFO files for Plex.
+Terminal=true
+Categories=Utility
