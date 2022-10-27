@@ -41,7 +41,6 @@ private slots:
 
     void on_castTable_cellChanged(int row, int column);
 
-    void actorButtonClicked();
 
 private:
     Ui::MainWindow *ui;

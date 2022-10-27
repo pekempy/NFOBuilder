@@ -277,13 +277,3 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
     }
 }
 
-void MainWindow::actorButtonClicked() {
-    auto button = qobject_cast<QPushButton *>(sender());
-    QString actorName = button->text();
-    QString URL = "https://www.qwant.com/?l=en&t=images&q=";
-    URL += actorName + " acting headshot";
-    image_search imageSearch(actorName, URL, this);
-    imageSearch.setModal(true);
-    imageSearch.exec();
-}
-
