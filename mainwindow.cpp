@@ -260,20 +260,30 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
             if (i == row && column != 3) {
                 //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
                 QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
-                QPushButton * cellLinkBtn = new QPushButton();
+                //QPushButton * cellLinkBtn = new QPushButton();
                 if(!cellLink){
-                    //cellLink = new QTableWidgetItem();
-                    //ui -> castTable -> setItem(i,3,cellLink);
-                    ui -> castTable -> setCellWidget(i, 3, cellLinkBtn);
+                    cellLink = new QTableWidgetItem();
+                    ui -> castTable -> setItem(i,3,cellLink);
+                    //ui -> castTable -> setCellWidget(i, 3, cellLinkBtn);
                 }
                 QTableWidgetItem * actor = ui -> castTable -> item(i, 0);
                 string actorName = actor->text().toStdString();
-                //string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
-                //cellLink->setText(QString::fromStdString(url));
-                cellLinkBtn->setText(QString::fromStdString(actorName));
-                cellLinkBtn->connect(cellLinkBtn, SIGNAL(clicked()), this, SLOT(actorButtonClicked()));
+                string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
+                cellLink->setText(QString::fromStdString(url));
+                //cellLinkBtn->setText(QString::fromStdString(actorName));
+                //cellLinkBtn->connect(cellLinkBtn, SIGNAL(clicked()), this, SLOT(actorButtonClicked()));
             }
         }
     }
 }
 
+void MainWindow::on_castTable_cellClicked(int row, int column)
+{
+    string urlToOpen = "";
+    if(column == 3){
+        urlToOpen = ui->castTable->item(row,column)->text().toStdString();
+    }
+    if (urlToOpen != ""){
+        QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
+    }
+}
