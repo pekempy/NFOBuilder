@@ -10,7 +10,6 @@
 #include <QList>
 
 #include "mainwindow.h"
-#include "image_search.h"
 #include "ui_mainwindow.h"
 
 using std::vector; using std::string;
@@ -258,20 +257,16 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
         for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
             //for each row
             if (i == row && column != 3) {
-                //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
+                ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
                 QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
-                //QPushButton * cellLinkBtn = new QPushButton();
                 if(!cellLink){
                     cellLink = new QTableWidgetItem();
                     ui -> castTable -> setItem(i,3,cellLink);
-                    //ui -> castTable -> setCellWidget(i, 3, cellLinkBtn);
                 }
                 QTableWidgetItem * actor = ui -> castTable -> item(i, 0);
                 string actorName = actor->text().toStdString();
                 string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
                 cellLink->setText(QString::fromStdString(url));
-                //cellLinkBtn->setText(QString::fromStdString(actorName));
-                //cellLinkBtn->connect(cellLinkBtn, SIGNAL(clicked()), this, SLOT(actorButtonClicked()));
             }
         }
     }
@@ -287,3 +282,4 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
         QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
 }
+

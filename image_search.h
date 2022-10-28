@@ -2,7 +2,6 @@
 #define IMAGE_SEARCH_H
 
 #include <QDialog>
-#include "filedownloader.h"
 
 
 namespace Ui {
