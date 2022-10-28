@@ -43,6 +43,9 @@ private slots:
 
     void on_castTable_cellClicked(int row, int column);
 
+    void on_encoraIDText_textChanged(const QString &arg1);
+
+    void on_encoraLookupButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -16,6 +16,8 @@ using std::vector; using std::string;
 using std::endl; using std::copy;
 
 //global strings
+string encoraID;
+string encoraIDURL;
 string showName;
 string showDate;
 string showYear;
@@ -45,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     QRegularExpression re("^\\d{4}[\\-\\/\\s]?((((0[13578])|(1[02]))[\\-\\/\\s]?(([0-2][0-9])|(3[01])))|(((0[469])|(11))[\\-\\/\\s]?(([0-2][0-9])|(30)))|(02[\\-\\/\\s]?[0-2][0-9]))$");
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
     ui->showDateInput->setValidator(validator);
+    //ui->encoraIDText->setValidator(new QIntValidator(1,2147483647, this));
 }
 
 MainWindow::~MainWindow()
@@ -160,6 +163,18 @@ void MainWindow::on_CreateNFO_clicked() {
 }
 
 //Set variables upon text changed for each section.
+
+void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
+{
+    encoraID = arg1.toStdString();
+    encoraIDURL = "https://api.gladosplex.gq/Recordings/" + encoraID;
+    if(encoraID.length() > 0) {
+        ui->encoraLookupButton->setEnabled(true);
+    } else {
+        ui->encoraLookupButton->setEnabled(false);
+    }
+}
+
 void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 {
     showName = arg1.toStdString();
@@ -252,12 +267,13 @@ void MainWindow::clearAllValues(){
 
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
+    string test;
     //when each row, column a changed, update link in column 4 for that row.
-    if(column == 0) {
+    if(column != 3) {
         for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
             //for each row
             if (i == row && column != 3) {
-                ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
+                //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
                 QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
                 if(!cellLink){
                     cellLink = new QTableWidgetItem();
@@ -272,6 +288,8 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
     }
 }
 
+
+
 void MainWindow::on_castTable_cellClicked(int row, int column)
 {
     string urlToOpen = "";
@@ -281,5 +299,13 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
     if (urlToOpen != ""){
         QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
+}
+
+
+
+
+void MainWindow::on_encoraLookupButton_clicked()
+{
+    QDesktopServices::openUrl(QUrl(QString::fromStdString(encoraIDURL)));
 }
 

@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>865</width>
-    <height>822</height>
+    <width>850</width>
+    <height>899</height>
    </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1500</width>
+    <height>1500</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>NFOBuilder for Plex</string>
@@ -25,42 +31,138 @@
     <bool>false</bool>
    </property>
    <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>If you want to auto-fill show details, please enter an Encora ID here. </string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>This will pull as much data as it can from Encora and auto-fill where possible.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Encora ID Lookup</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <layout class="QHBoxLayout" name="encoraIDLayout">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="encoraIDText">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="placeholderText">
+         <string>Encora ID</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="encoraLookupButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Lookup Encora ID</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="Line" name="line">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+        <horstretch>100</horstretch>
+        <verstretch>5</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>10</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>If you need to modify any information, do this below.</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
      <widget class="QLabel" name="showNameLabel">
       <property name="text">
        <string>Show Name</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="6" column="1">
      <widget class="QLineEdit" name="showNameInput">
       <property name="placeholderText">
        <string>The shows name</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="8" column="0">
      <widget class="QLabel" name="showDateLabel">
       <property name="text">
        <string>Performance Date</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="8" column="1">
      <widget class="QLineEdit" name="showDateInput">
       <property name="placeholderText">
        <string>YYYY-MM-DD</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
+    <item row="9" column="0">
      <widget class="QLabel" name="showLocationLabel">
       <property name="text">
        <string>Location</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
+    <item row="9" column="1">
      <widget class="QLineEdit" name="showLocationInput">
       <property name="frame">
        <bool>true</bool>
@@ -70,56 +172,56 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="10" column="0">
      <widget class="QLabel" name="showTaglineLabel">
       <property name="text">
        <string>Tag Line</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
+    <item row="10" column="1">
      <widget class="QLineEdit" name="showTaglineInput">
       <property name="placeholderText">
        <string>A tagline for the show</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="0">
+    <item row="11" column="0">
      <widget class="QLabel" name="showSynopsisLabel">
       <property name="text">
        <string>Synopsis</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="1">
+    <item row="11" column="1">
      <widget class="QTextEdit" name="showSynopsisInput">
       <property name="placeholderText">
        <string>A brief synopsis of the show, or notes</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0">
+    <item row="12" column="0">
      <widget class="QLabel" name="showPosterLabel">
       <property name="text">
        <string>Show Poster URL</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
+    <item row="12" column="1">
      <widget class="QLineEdit" name="showPosterInput">
       <property name="placeholderText">
        <string>Full URL to image to use as Poster</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="0">
+    <item row="13" column="0">
      <widget class="QLabel" name="CastLabel">
       <property name="text">
        <string>Cast Members</string>
       </property>
      </widget>
     </item>
-    <item row="8" column="0" colspan="2">
+    <item row="14" column="0" colspan="2">
      <widget class="QTableWidget" name="castTable">
       <property name="minimumSize">
        <size>
@@ -407,24 +509,37 @@
       </item>
      </widget>
     </item>
-    <item row="18" column="1">
-     <widget class="QLineEdit" name="outputFolderInput">
-      <property name="placeholderText">
-       <string>e.g C:/Users/Pete/Desktop</string>
+    <item row="19" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
       </property>
-     </widget>
+      <item>
+       <widget class="QLineEdit" name="outputFolderInput">
+        <property name="placeholderText">
+         <string>e.g C:/Users/Pete/Desktop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CreateNFO">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Create NFO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="18" column="0">
+    <item row="19" column="0">
      <widget class="QLabel" name="outputFolderLabel">
       <property name="text">
        <string>Output folder</string>
-      </property>
-     </widget>
-    </item>
-    <item row="20" column="0" colspan="2">
-     <widget class="QPushButton" name="CreateNFO">
-      <property name="text">
-       <string>Create NFO</string>
       </property>
      </widget>
     </item>
@@ -436,8 +551,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>865</width>
-     <height>30</height>
+     <width>850</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
