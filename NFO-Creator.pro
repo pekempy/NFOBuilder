@@ -26,6 +26,7 @@ FORMS += \
 
 # Icon Rules
 ICON = "resources/plex-nfo.icns"
+RC_ICONS = "resources/plex-nfo.ico"
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
