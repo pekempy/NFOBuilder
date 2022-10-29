@@ -1,7 +1,7 @@
 # NFOBuilder
 Create NFOs for theatrical performances compatible with Plex, to allow for full cast information and show details!
 
-![OpenIssues](https://img.shields.io/github/issues-raw/pekempy/NFOBuilder?style=for-the-badge) ![GitHub](https://img.shields.io/github/license/pekempy/NFOBuilder?label=license&style=for-the-badge) ![GitHub last commit](https://img.shields.io/github/last-commit/pekempy/NFOBuilder?style=for-the-badge) ![Maintenance](https://img.shields.io/maintenance/yes/2021?style=for-the-badge)  ![GitHub](https://img.shields.io/badge/PLATFORM-LINUX%20%7C%20WINDOWS%20%7C%20MACOS-brightgreen?style=for-the-badge)
+![OpenIssues](https://img.shields.io/github/issues-raw/pekempy/NFOBuilder?style=for-the-badge) ![GitHub](https://img.shields.io/github/license/pekempy/NFOBuilder?label=license&style=for-the-badge) ![GitHub last commit](https://img.shields.io/github/last-commit/pekempy/NFOBuilder?style=for-the-badge) ![Maintenance](https://img.shields.io/maintenance/yes/2022?style=for-the-badge)  ![GitHub](https://img.shields.io/badge/PLATFORM-LINUX%20%7C%20WINDOWS%20%7C%20MACOS-brightgreen?style=for-the-badge)
 
 # Requirements
 A Plex library with [XBMCnfoMoviesImporter](https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle) set as the agent  
