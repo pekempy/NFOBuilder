@@ -8,9 +8,15 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include <QList>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "filedownloader.h"
 
 using std::vector; using std::string;
 using std::endl; using std::copy;
@@ -27,6 +33,7 @@ string showPlot;
 string showPosterURL;
 string castList;
 string actorXmlString;
+string testValue;
 string castMember = "  <actor>\n"
                     "       <name>str1</name>\n"
                     "       <role>str2</role>\n"
@@ -34,6 +41,7 @@ string castMember = "  <actor>\n"
                     "       <type>Actor</type>\n"
                     "   </actor>";
 string outputFolder;
+FileDownloader * file;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -301,11 +309,73 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
     }
 }
 
+QString MainWindow::getDataFromURL(){
+    QNetworkAccessManager manager;
+    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL))));
+    QEventLoop event;
+    connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QString source = response->readAll();
+    return source;
+}
 
+QString MainWindow::getCharacterName(QString character) {
+    QString characterFixed;
 
+    characterFixed = character;
+    characterFixed = characterFixed.replace(")", "");
+
+    return characterFixed;
+}
+
+void MainWindow::sortCastData(QString cast) {
+    //ui->showSynopsisInput->setText(cast);
+    //cast = Willemijn Verkaik (Elphaba), Alli Mauzey (Glinda), Kyle Dean Massey (Fiyero), Adam Grupper (The Wizard), Randy Danson (Madame Morrible), Catherine Charlebois (Nessarose), F Michael Haynie (Boq), John Schiappa (Doctor Dillamond)
+    QStringList castList = cast.split(", ");
+    for (int i = 0; i < castList.size(); ++i) {
+        //update cast table with each actor (role)
+        QStringList performer = castList[i].split("(");
+        ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
+        QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
+        ui->castTable->item(i,1)->setText(characterName);
+
+    }
+}
 
 void MainWindow::on_encoraLookupButton_clicked()
 {
-    QDesktopServices::openUrl(QUrl(QString::fromStdString(encoraIDURL)));
+    // QDesktopServices::openUrl(QUrl(QString::fromStdString(encoraIDURL)));
+    // get from URL and do something lol
+    for(int i = 0; i < 39; ++i) {
+        ui->castTable->item(i, 0)->setText(NULL);
+        ui->castTable->item(i, 1)->setText(NULL);
+        ui->castTable->item(i, 2)->setText(NULL);
+        ui->castTable->item(i, 3)->setText(NULL);
+    }
+
+    ui->showSynopsisInput->setText(QString::fromStdString("Loading data..."));
+    QString siteData = getDataFromURL();
+    //ui->showSynopsisInput->setText(siteData);
+    QJsonObject obj;
+    QJsonDocument doc = QJsonDocument::fromJson(siteData.toUtf8());
+    if(doc.isObject()){
+        obj = doc.object();
+    }
+    QString APICast = obj["rawCast"].toString();
+    QString APIShowDate = obj["recordingDate"].toString();
+
+    QJsonObject recordingTour = obj["recordingTour"].toObject();
+    QJsonObject recordingProd = recordingTour["production"].toObject();
+
+    QString APIShowName = recordingProd["name"].toString();
+    QString APIShowTour = recordingTour["name"].toString();
+    ui->showNameInput->setText(APIShowName);
+    ui->showDateInput->setText(APIShowDate);
+    ui->showLocationInput->setText(APIShowTour);
+    ui->showSynopsisInput->setText("");
+    //temp
+    sortCastData(APICast);
 }
+
+
 

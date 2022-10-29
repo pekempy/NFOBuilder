@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "image_search.h"
+#include "filedownloader.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -47,6 +48,11 @@ private slots:
 
     void on_encoraLookupButton_clicked();
 
+    QString getDataFromURL();
+
+    void sortCastData(const QString cast);
+
+    QString getCharacterName(const QString character);
 private:
     Ui::MainWindow *ui;
     void clearAllValues();
