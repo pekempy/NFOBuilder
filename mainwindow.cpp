@@ -361,7 +361,7 @@ void MainWindow::on_encoraLookupButton_clicked()
     if(doc.isObject()){
         obj = doc.object();
     }
-    QString APICast = obj["rawCast"].toString();
+    QString APICast = obj["cast"].toString();
     QString APIShowDate = obj["recordingDate"].toString();
 
     QJsonObject recordingTour = obj["recordingTour"].toObject();
