@@ -41,6 +41,7 @@ string castMember = "  <actor>\n"
                     "       <type>Actor</type>\n"
                     "   </actor>";
 string outputFolder;
+string encoraCookie;
 FileDownloader * file;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -176,7 +177,17 @@ void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
 {
     encoraID = arg1.toStdString();
     encoraIDURL = "https://api.gladosplex.gq/Recordings/" + encoraID;
-    if(encoraID.length() > 0) {
+    if(encoraID.length() > 0 && encoraCookie.length() > 0) {
+        ui->encoraLookupButton->setEnabled(true);
+    } else {
+        ui->encoraLookupButton->setEnabled(false);
+    }
+}
+
+void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+{
+    encoraCookie = arg1.toStdString();
+    if(encoraID.length() > 0 && encoraCookie.length() > 0) {
         ui->encoraLookupButton->setEnabled(true);
     } else {
         ui->encoraLookupButton->setEnabled(false);
@@ -244,6 +255,7 @@ void MainWindow::clearAllValues(){
     showPlot = "";
     showPosterURL = "";
     actorXmlString = "";
+    encoraID = "";
 
     //clear UI values
     ui->showNameInput->setText("");
@@ -272,6 +284,7 @@ void MainWindow::clearAllValues(){
     //jump to top of cast table
     ui->castTable->scrollToTop();
 }
+
 
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
@@ -311,7 +324,9 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
 
 QString MainWindow::getDataFromURL(){
     QNetworkAccessManager manager;
-    QNetworkReply *response = manager.get(QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL))));
+    QNetworkRequest request = QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL)));
+    request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraCookie)));
+    QNetworkReply *response = manager.get(request);
     QEventLoop event;
     connect(response, SIGNAL(finished()), &event, SLOT(quit()));
     event.exec();
@@ -376,6 +391,7 @@ void MainWindow::on_encoraLookupButton_clicked()
     //temp
     sortCastData(APICast);
 }
+
 
 
 
