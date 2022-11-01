@@ -139,7 +139,9 @@ void MainWindow::on_CreateNFO_clicked() {
         else if (j == 2) {
           castMember.find("str3");
           castMember.replace(castMember.find("str3"), 4, item -> text().toStdString());
-          actorXmlString.append(castMember + "\n");
+          if(castMember.find("<name></name>") == string::npos) {
+            actorXmlString.append(castMember + "\n");
+          }
         }
       }
     }
