@@ -94,7 +94,7 @@ void MainWindow::linkChangedHandler(const QString &actorName, const QString &url
 
 //Build the XML and return
 string buildXML(){
-    string xmlPart1 =   "<?xml versiQDesktopServiceson=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
+    string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
                         "   <title>" + showName + "</title>\n"
                         "   <originaltitle>" + showName + "</originaltitle>\n"
