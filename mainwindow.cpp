@@ -13,6 +13,7 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSettings>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -43,6 +44,7 @@ string castMember = "  <actor>\n"
 string outputFolder;
 string encoraCookie;
 FileDownloader * file;
+QSettings mySettings;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -56,7 +58,11 @@ MainWindow::MainWindow(QWidget *parent)
     QRegularExpression re("^\\d{4}[\\-\\/\\s]?((((0[13578])|(1[02]))[\\-\\/\\s]?(([0-2][0-9])|(3[01])))|(((0[469])|(11))[\\-\\/\\s]?(([0-2][0-9])|(30)))|(02[\\-\\/\\s]?[0-2][0-9]))$");
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
     ui->showDateInput->setValidator(validator);
-    //ui->encoraIDText->setValidator(new QIntValidator(1,2147483647, this));
+    ui->encoraIDText->setValidator(new QIntValidator(1,2147483647, this));
+    if(mySettings.value("encora-cookie")!="") {
+        QString cookie = mySettings.value("encora-cookie").toString();
+        ui->encoraCookie->setText(cookie);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -186,9 +192,12 @@ void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
     }
 }
 
-void MainWindow::on_lineEdit_textChanged(const QString &arg1)
+//TODO - Store cookie in a file somewhere if possible - and on start need to load that cookie
+void MainWindow::on_encoraCookie_textChanged(const QString &arg1)
 {
     encoraCookie = arg1.toStdString();
+    QVariant cookie(arg1);
+    mySettings.setValue("encora-cookie", cookie);
     if(encoraID.length() > 0 && encoraCookie.length() > 0) {
         ui->encoraLookupButton->setEnabled(true);
     } else {
@@ -346,23 +355,26 @@ QString MainWindow::getCharacterName(QString character) {
 }
 
 void MainWindow::sortCastData(QString cast) {
-    //ui->showSynopsisInput->setText(cast);
-    //cast = Willemijn Verkaik (Elphaba), Alli Mauzey (Glinda), Kyle Dean Massey (Fiyero), Adam Grupper (The Wizard), Randy Danson (Madame Morrible), Catherine Charlebois (Nessarose), F Michael Haynie (Boq), John Schiappa (Doctor Dillamond)
-    QStringList castList = cast.split(", ");
-    for (int i = 0; i < castList.size(); ++i) {
-        //update cast table with each actor (role)
-        QStringList performer = castList[i].split("(");
-        ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
-        QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
-        ui->castTable->item(i,1)->setText(characterName);
 
+    QStringList castList = cast.split(", ");
+    if(castList[0] != "") {
+        for (int i = 0; i < castList.size(); ++i) {
+         //update cast table with each actor (role)
+            QStringList performer = castList[i].split("(");
+            ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
+            QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
+            ui->castTable->item(i,1)->setText(characterName);
+        }
+    } else {
+        //TODO: this needs updating to show in a popup maybe?
+        ui->showSynopsisInput->setText("Invalid Encora Cookie or ID - please check your details.");
+        ui->encoraCookie->setText("");
+        mySettings.remove("encora-cookie");
     }
 }
 
 void MainWindow::on_encoraLookupButton_clicked()
 {
-    // QDesktopServices::openUrl(QUrl(QString::fromStdString(encoraIDURL)));
-    // get from URL and do something lol
     for(int i = 0; i < 39; ++i) {
         ui->castTable->item(i, 0)->setText(NULL);
         ui->castTable->item(i, 1)->setText(NULL);
@@ -370,7 +382,9 @@ void MainWindow::on_encoraLookupButton_clicked()
         ui->castTable->item(i, 3)->setText(NULL);
     }
 
+    //TODO: this needs updating to show in a popup maybe?
     ui->showSynopsisInput->setText(QString::fromStdString("Loading data..."));
+
     QString siteData = getDataFromURL();
     //ui->showSynopsisInput->setText(siteData);
     QJsonObject obj;
@@ -393,6 +407,8 @@ void MainWindow::on_encoraLookupButton_clicked()
     //temp
     sortCastData(APICast);
 }
+
+
 
 
 

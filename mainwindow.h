@@ -46,6 +46,8 @@ private slots:
 
     void on_encoraIDText_textChanged(const QString &arg1);
 
+    void on_encoraCookie_textChanged(const QString &arg1);
+
     void on_encoraLookupButton_clicked();
 
     QString getDataFromURL();
@@ -53,7 +55,7 @@ private slots:
     void sortCastData(const QString cast);
 
     QString getCharacterName(const QString character);
-    void on_lineEdit_textChanged(const QString &arg1);
+
 
 private:
     Ui::MainWindow *ui;
