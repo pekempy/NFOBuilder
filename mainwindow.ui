@@ -32,21 +32,35 @@
    </property>
    <layout class="QFormLayout" name="formLayout">
     <item row="0" column="1">
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="autoFillLabel">
       <property name="text">
        <string>If you want to auto-fill show details, please enter an Encora ID here. </string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="pullDataLabel">
       <property name="text">
        <string>This will pull as much data as it can from Encora and auto-fill where possible.</string>
       </property>
      </widget>
     </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="encoraCookieLabel">
+      <property name="text">
+       <string>Encora Cookie!</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="encoraCookie">
+      <property name="placeholderText">
+       <string>Paste your cookie after logging into beta.encora.it here</string>
+      </property>
+     </widget>
+    </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="encoraIDLabel">
       <property name="text">
        <string>Encora ID Lookup</string>
       </property>
@@ -96,6 +110,12 @@
     </item>
     <item row="4" column="0">
      <widget class="Line" name="line_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -121,7 +141,7 @@
      </widget>
     </item>
     <item row="5" column="1">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="modifyInformationLAbel">
       <property name="text">
        <string>If you need to modify any information, do this below.</string>
       </property>
@@ -1109,6 +1129,13 @@
       </item>
      </widget>
     </item>
+    <item row="19" column="0">
+     <widget class="QLabel" name="outputFolderLabel">
+      <property name="text">
+       <string>Output folder</string>
+      </property>
+     </widget>
+    </item>
     <item row="19" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="topMargin">
@@ -1135,27 +1162,6 @@
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="19" column="0">
-     <widget class="QLabel" name="outputFolderLabel">
-      <property name="text">
-       <string>Output folder</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="encoraCookie">
-      <property name="placeholderText">
-       <string>Paste your cookie after logging into beta.encora.it here</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Encora Cookie!</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

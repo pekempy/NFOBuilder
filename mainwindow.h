@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include "image_search.h"
-#include "filedownloader.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -22,6 +21,7 @@ public slots:
     void linkChangedHandler(const QString &actorName, const QString &url);
 
 private slots:
+
     void on_CreateNFO_clicked();
 
     void on_showNameInput_textChanged(const QString &arg1);

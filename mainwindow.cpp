@@ -19,6 +19,7 @@
 #include "ui_mainwindow.h"
 #include "filedownloader.h"
 
+
 using std::vector; using std::string;
 using std::endl; using std::copy;
 
@@ -49,7 +50,6 @@ QSettings mySettings;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-
 {
     ui->setupUi(this);
     QFormLayout * centralWidget = ui->formLayout;
@@ -62,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent)
     if(mySettings.value("encora-cookie")!="") {
         QString cookie = mySettings.value("encora-cookie").toString();
         ui->encoraCookie->setText(cookie);
+        ui->encoraCookie->hide();
+        ui->encoraCookieLabel->hide();
     }
 }
 
@@ -69,6 +71,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::linkChangedHandler(const QString &actorName, const QString &url) {
     actorNameFromDialog = actorName;
@@ -192,7 +195,6 @@ void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
     }
 }
 
-//TODO - Store cookie in a file somewhere if possible - and on start need to load that cookie
 void MainWindow::on_encoraCookie_textChanged(const QString &arg1)
 {
     encoraCookie = arg1.toStdString();
@@ -366,10 +368,12 @@ void MainWindow::sortCastData(QString cast) {
             ui->castTable->item(i,1)->setText(characterName);
         }
     } else {
-        //TODO: this needs updating to show in a popup maybe?
         ui->showSynopsisInput->setText("Invalid Encora Cookie or ID - please check your details.");
+        QMessageBox::critical(0, "Cookie Invalid", "Encora Cookie Invalid. Enter Data manually, or set a new cookie.");
         ui->encoraCookie->setText("");
         mySettings.remove("encora-cookie");
+        ui->encoraCookie->show();
+        ui->encoraCookieLabel->show();
     }
 }
 
@@ -381,9 +385,6 @@ void MainWindow::on_encoraLookupButton_clicked()
         ui->castTable->item(i, 2)->setText(NULL);
         ui->castTable->item(i, 3)->setText(NULL);
     }
-
-    //TODO: this needs updating to show in a popup maybe?
-    ui->showSynopsisInput->setText(QString::fromStdString("Loading data..."));
 
     QString siteData = getDataFromURL();
     //ui->showSynopsisInput->setText(siteData);
