@@ -27,10 +27,12 @@ using std::endl; using std::copy;
 string encoraID;
 string encoraIDURL;
 string showName;
+string showDirector;
 string showDate;
 string showYear;
 string showLocation;
 string showTag;
+string showGenre;
 string showPlot;
 string showPosterURL;
 string castList;
@@ -64,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->encoraCookie->setText(cookie);
         ui->encoraCookie->hide();
         ui->encoraCookieLabel->hide();
+    } else {
+        //ui->encoraCookie->show();
+        ui->encoraCookieLabel->show();
     }
 }
 
@@ -100,7 +105,8 @@ void MainWindow::linkChangedHandler(const QString &actorName, const QString &url
     actorNameFromDialog = "";
 }
 
-
+//TODO - Somehow work out how to add NFT content rating if show is NFT
+//TODO - Pull genres once they are added
 //Build the XML and return
 string buildXML(){
     string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
@@ -110,14 +116,13 @@ string buildXML(){
                         "   <sorttitle>" + showName + "</sorttitle>\n"
                         "   <premiered>" + showDate + "</premiered>\n"
                         "   <releasedate>" + showDate + "</releasedate>\n"
+                        "   <director" + showDirector + "</director>\n"
+                        + showGenre +
                         "   <year>" + showYear + "</year>\n"
                         "   <studio>" + showLocation + "</studio>\n"
-                        "   <outline>" + showTag + "</outline>\n"
                         "   <tagline>" + showTag + "</tagline>\n"
                         "   <plot>" + showPlot + "</plot>\n"
                         "   <lockdata>true</lockdata>\n"
-                        "   <genre>Musical</genre>\n"
-                        "   <genre>Musical Theatre</genre>\n"
                         "   <art>\n"
                         "       <poster>" + showPosterURL + "</poster>\n"
                         "   </art>\n";
@@ -413,4 +418,50 @@ void MainWindow::on_encoraLookupButton_clicked()
 
 
 
+//genre checkboxes
+void MainWindow::modifyGenre(string genre, bool checked) {
+    std::cout << "Genre: " + genre;
+    std::cout << &"Checked: " [ checked];
+    if(checked) {
+        showGenre += genre;
+    } else {
+        showGenre.replace(showGenre.find(genre), genre.length() - 1, "");
+        showGenre.erase(std::unique(showGenre.begin(), showGenre.end(),
+                              [] (char a, char b) {return a == '\n' && b == '\n';}),
+                  showGenre.end());
+    }
+    ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
+}
+void MainWindow::on_checkbox_musical_toggled(bool checked)
+{
+    string genre = "   <genre>Musical</genre>\n";
+    modifyGenre(genre, checked);
+}
+
+void MainWindow::on_checkbox_play_toggled(bool checked)
+{
+    string genre = "   <genre>Play</genre>\n";
+    modifyGenre(genre, checked);
+}
+
+
+void MainWindow::on_checkbox_ballet_toggled(bool checked)
+{
+    string genre = "   <genre>Ballet</genre>\n";
+    modifyGenre(genre, checked);
+}
+
+
+void MainWindow::on_checkbox_bootleg_toggled(bool checked)
+{
+    string genre = "   <genre>Bootleg</genre>\n";
+    modifyGenre(genre, checked);
+}
+
+
+void MainWindow::on_checkbox_proshot_toggled(bool checked)
+{
+    string genre = "   <genre>Pro-Shot</genre>\n";
+    modifyGenre(genre, checked);
+}
 

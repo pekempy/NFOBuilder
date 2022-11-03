@@ -56,6 +56,17 @@ private slots:
 
     QString getCharacterName(const QString character);
 
+    void modifyGenre(std::string genre, bool checked);
+
+    void on_checkbox_musical_toggled(bool checked);
+
+    void on_checkbox_play_toggled(bool checked);
+
+    void on_checkbox_ballet_toggled(bool checked);
+
+    void on_checkbox_bootleg_toggled(bool checked);
+
+    void on_checkbox_proshot_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

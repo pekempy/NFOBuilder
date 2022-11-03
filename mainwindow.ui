@@ -1163,6 +1163,55 @@
       </item>
      </layout>
     </item>
+    <item row="16" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkbox_musical">
+        <property name="text">
+         <string>Musical</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkbox_play">
+        <property name="text">
+         <string>Play</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkbox_ballet">
+        <property name="text">
+         <string>Ballet</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkbox_bootleg">
+        <property name="text">
+         <string>Bootleg</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkbox_proshot">
+        <property name="text">
+         <string>Pro-Shot</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="16" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Select Genres</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
