@@ -105,6 +105,7 @@ void MainWindow::linkChangedHandler(const QString &actorName, const QString &url
     actorNameFromDialog = "";
 }
 
+//TODO - pull director / master
 //TODO - Somehow work out how to add NFT content rating if show is NFT
 //TODO - Pull genres once they are added
 //Build the XML and return
@@ -116,7 +117,7 @@ string buildXML(){
                         "   <sorttitle>" + showName + "</sorttitle>\n"
                         "   <premiered>" + showDate + "</premiered>\n"
                         "   <releasedate>" + showDate + "</releasedate>\n"
-                        "   <director" + showDirector + "</director>\n"
+                        "   <director>" + showDirector + "</director>\n"
                         + showGenre +
                         "   <year>" + showYear + "</year>\n"
                         "   <studio>" + showLocation + "</studio>\n"
@@ -430,7 +431,8 @@ void MainWindow::modifyGenre(string genre, bool checked) {
                               [] (char a, char b) {return a == '\n' && b == '\n';}),
                   showGenre.end());
     }
-    ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
+    //uncomment for genre debugging
+    //ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
 }
 void MainWindow::on_checkbox_musical_toggled(bool checked)
 {
