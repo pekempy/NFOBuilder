@@ -66,8 +66,8 @@ MainWindow::MainWindow(QWidget *parent)
         ui->encoraCookie->setText(cookie);
         ui->encoraCookie->hide();
         ui->encoraCookieLabel->hide();
-    } else {
-        //ui->encoraCookie->show();
+    }  else {
+        ui->encoraCookie->show();
         ui->encoraCookieLabel->show();
     }
 }
