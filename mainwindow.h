@@ -31,8 +31,6 @@ private slots:
 
     void on_showSynopsisInput_textChanged();
 
-    void on_showPosterInput_textChanged(const QString &arg1);
-
     void on_outputFolderInput_textChanged(const QString &arg1);
 
     void on_outputFolderInput_editingFinished();

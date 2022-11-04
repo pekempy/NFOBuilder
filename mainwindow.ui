@@ -221,27 +221,13 @@
      </widget>
     </item>
     <item row="12" column="0">
-     <widget class="QLabel" name="showPosterLabel">
-      <property name="text">
-       <string>Show Poster URL</string>
-      </property>
-     </widget>
-    </item>
-    <item row="12" column="1">
-     <widget class="QLineEdit" name="showPosterInput">
-      <property name="placeholderText">
-       <string>Full URL to image to use as Poster</string>
-      </property>
-     </widget>
-    </item>
-    <item row="13" column="0">
      <widget class="QLabel" name="CastLabel">
       <property name="text">
        <string>Cast Members</string>
       </property>
      </widget>
     </item>
-    <item row="14" column="0" colspan="2">
+    <item row="13" column="0" colspan="2">
      <widget class="QTableWidget" name="castTable">
       <property name="minimumSize">
        <size>
@@ -1129,41 +1115,14 @@
       </item>
      </widget>
     </item>
-    <item row="19" column="0">
-     <widget class="QLabel" name="outputFolderLabel">
+    <item row="15" column="0">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Output folder</string>
+       <string>Select Genres</string>
       </property>
      </widget>
     </item>
-    <item row="19" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLineEdit" name="outputFolderInput">
-        <property name="placeholderText">
-         <string>e.g C:/Users/Pete/Desktop</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="CreateNFO">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Create NFO</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="16" column="1">
+    <item row="15" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="topMargin">
        <number>0</number>
@@ -1205,12 +1164,39 @@
       </item>
      </layout>
     </item>
-    <item row="16" column="0">
-     <widget class="QLabel" name="label">
+    <item row="18" column="0">
+     <widget class="QLabel" name="outputFolderLabel">
       <property name="text">
-       <string>Select Genres</string>
+       <string>Output folder</string>
       </property>
      </widget>
+    </item>
+    <item row="18" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="outputFolderInput">
+        <property name="placeholderText">
+         <string>e.g C:/Users/Pete/Desktop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="CreateNFO">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Create NFO</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

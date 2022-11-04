@@ -34,7 +34,6 @@ string showLocation;
 string showTag;
 string showGenre;
 string showPlot;
-string showPosterURL;
 string castList;
 string actorXmlString;
 string testValue;
@@ -46,6 +45,7 @@ string castMember = "  <actor>\n"
                     "   </actor>";
 string outputFolder;
 string encoraCookie;
+bool isNFT = false;
 FileDownloader * file;
 QSettings mySettings;
 
@@ -61,15 +61,16 @@ MainWindow::MainWindow(QWidget *parent)
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
     ui->showDateInput->setValidator(validator);
     ui->encoraIDText->setValidator(new QIntValidator(1,2147483647, this));
-    if(mySettings.value("encora-cookie")!="") {
+    if(mySettings.value("encora-cookie").toString() != "") {
         QString cookie = mySettings.value("encora-cookie").toString();
         ui->encoraCookie->setText(cookie);
         ui->encoraCookie->hide();
         ui->encoraCookieLabel->hide();
-    }  else {
+    } else {
         ui->encoraCookie->show();
         ui->encoraCookieLabel->show();
     }
+    ui->outputFolderInput->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/");
 }
 
 MainWindow::~MainWindow()
@@ -123,13 +124,24 @@ string buildXML(){
                         "   <studio>" + showLocation + "</studio>\n"
                         "   <tagline>" + showTag + "</tagline>\n"
                         "   <plot>" + showPlot + "</plot>\n"
-                        "   <lockdata>true</lockdata>\n"
-                        "   <art>\n"
-                        "       <poster>" + showPosterURL + "</poster>\n"
-                        "   </art>\n";
-    string xmlPart2 = actorXmlString;
-    string xmlPart3 =   "</movie>";
-    return xmlPart1 + xmlPart2 + xmlPart3;
+                        "   <lockdata>true</lockdata>\n";
+    string xmlPart2 = "   <certification>UK:NFT</certification>\n"
+                      "   <certification>US:NFT</certification>\n"
+                      "   <certification>SP:NFT</certification>\n"
+                      "   <certification>HK:NFT</certification>\n"
+                      "   <certification>CN:NFT</certification>\n"
+                      "   <certification>FR:NFT</certification>\n"
+                      "   <certification>IT:NFT</certification>\n"
+                      "   <certification>BR:NFT</certification>\n"
+                      "   <certification>PT:NFT</certification>\n"
+                      "   <certification>NL:NFT</certification>\n";
+    string xmlPart3 = actorXmlString;
+    string xmlPart4 =   "</movie>";
+    if(isNFT) {
+    return xmlPart1 + xmlPart2 + xmlPart3 + xmlPart4;
+    } else {
+        return xmlPart1 + xmlPart3 + xmlPart4;
+    }
 }
 
 bool fileExists(QString handle){
@@ -243,11 +255,6 @@ void MainWindow::on_showSynopsisInput_textChanged()
     showPlot = ui->showSynopsisInput->toPlainText().toStdString();
 }
 
-void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
-{
-    showPosterURL = arg1.toStdString();
-}
-
 void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
 {
     outputFolder = arg1.toStdString();
@@ -272,7 +279,6 @@ void MainWindow::clearAllValues(){
     showLocation = "";
     showTag = "";
     showPlot = "";
-    showPosterURL = "";
     actorXmlString = "";
     encoraID = "";
 
@@ -282,7 +288,6 @@ void MainWindow::clearAllValues(){
     ui->showLocationInput->setText("");
     ui->showTaglineInput->setText("");
     ui->showSynopsisInput->setText("");
-    ui->showPosterInput->setText("");
     ui->castTable->clearContents();
 
     //set column 0 in cast table contents to ""
@@ -298,7 +303,6 @@ void MainWindow::clearAllValues(){
             ui->castTable->clearContents();
         }
     }
-
 
     //jump to top of cast table
     ui->castTable->scrollToTop();
@@ -368,10 +372,18 @@ void MainWindow::sortCastData(QString cast) {
     if(castList[0] != "") {
         for (int i = 0; i < castList.size(); ++i) {
          //update cast table with each actor (role)
-            QStringList performer = castList[i].split("(");
-            ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
-            QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
-            ui->castTable->item(i,1)->setText(characterName);
+            if(castList[i].contains("(")) {
+                //castList contains parenthesis
+                QStringList performer = castList[i].split("(");
+                ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
+                QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
+                ui->castTable->item(i,1)->setText(characterName);
+            }
+            else {
+                QString performer = castList[i];
+                ui->castTable->item(i,0)->setText(QString::fromStdString(performer.toStdString()));
+                ui->castTable->item(i,1)->setText("Ensemble");
+            }
         }
     } else {
         ui->showSynopsisInput->setText("Invalid Encora Cookie or ID - please check your details.");
@@ -407,6 +419,16 @@ void MainWindow::on_encoraLookupButton_clicked()
 
     QString APIShowName = recordingProd["name"].toString();
     QString APIShowTour = recordingTour["name"].toString();
+
+    //nft checks!
+    QString nftDate = obj["nftDate"].toString();
+    bool nftForever = obj["isNftForever"].toBool();
+    QString nftDateShorter = nftDate.left(10);
+    QDate nftDateAsDate = QDate::fromString(nftDateShorter, "yyyy-MM-dd");
+    QDate currentDate = QDate::currentDate();
+    if(currentDate < nftDateAsDate || nftForever == true) {
+        isNFT = true;
+    }
     ui->showNameInput->setText(APIShowName);
     ui->showDateInput->setText(APIShowDate);
     ui->showLocationInput->setText(APIShowTour);
