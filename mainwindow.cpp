@@ -47,7 +47,8 @@ string outputFolder;
 string encoraCookie;
 bool isNFT = false;
 FileDownloader * file;
-QSettings mySettings;
+//settings file set org/app name
+QSettings mySettings("Pekempy","NFO Builder");
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
