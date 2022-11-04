@@ -14,6 +14,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSettings>
+#include <QStandardPaths>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
