@@ -193,16 +193,16 @@
      </widget>
     </item>
     <item row="10" column="0">
-     <widget class="QLabel" name="showTaglineLabel">
+     <widget class="QLabel" name="showMasterLabel">
       <property name="text">
-       <string>Tag Line</string>
+       <string>Master Name</string>
       </property>
      </widget>
     </item>
     <item row="10" column="1">
-     <widget class="QLineEdit" name="showTaglineInput">
+     <widget class="QLineEdit" name="showMasterInput">
       <property name="placeholderText">
-       <string>A tagline for the show</string>
+       <string>The Master who released this</string>
       </property>
      </widget>
     </item>

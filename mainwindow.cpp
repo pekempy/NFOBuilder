@@ -32,7 +32,6 @@ string showDirector;
 string showDate;
 string showYear;
 string showLocation;
-string showTag;
 string showGenre;
 string showPlot;
 string castList;
@@ -124,7 +123,6 @@ string buildXML(){
                         + showGenre +
                         "   <year>" + showYear + "</year>\n"
                         "   <studio>" + showLocation + "</studio>\n"
-                        "   <tagline>" + showTag + "</tagline>\n"
                         "   <plot>" + showPlot + "</plot>\n"
                         "   <lockdata>true</lockdata>\n";
     string xmlPart2 = "   <certification>UK:NFT</certification>\n"
@@ -247,9 +245,9 @@ void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
     showLocation = arg1.toStdString();
 }
 
-void MainWindow::on_showTaglineInput_textChanged(const QString &arg1)
+void MainWindow::on_showMasterInput_textChanged(const QString &arg1)
 {
-    showTag = arg1.toStdString();
+    showDirector = arg1.toStdString();
 }
 
 void MainWindow::on_showSynopsisInput_textChanged()
@@ -279,7 +277,7 @@ void MainWindow::clearAllValues(){
     showDate = "";
     showYear = "";
     showLocation = "";
-    showTag = "";
+    showDirector = "";
     showPlot = "";
     actorXmlString = "";
     encoraID = "";
@@ -288,7 +286,7 @@ void MainWindow::clearAllValues(){
     ui->showNameInput->setText("");
     ui->showDateInput->setText("");
     ui->showLocationInput->setText("");
-    ui->showTaglineInput->setText("");
+    ui->showMasterInput->setText("");
     ui->showSynopsisInput->setText("");
     ui->castTable->clearContents();
 
@@ -415,6 +413,8 @@ void MainWindow::on_encoraLookupButton_clicked()
     }
     QString APICast = obj["cast"].toString();
     QString APIShowDate = obj["recordingDate"].toString();
+    QJsonObject apiMaster = obj["master"].toObject();
+    QString recordingMaster = apiMaster["name"].toString();
 
     QJsonObject recordingTour = obj["recordingTour"].toObject();
     QJsonObject recordingProd = recordingTour["production"].toObject();
@@ -434,6 +434,7 @@ void MainWindow::on_encoraLookupButton_clicked()
     ui->showNameInput->setText(APIShowName);
     ui->showDateInput->setText(APIShowDate);
     ui->showLocationInput->setText(APIShowTour);
+    ui->showMasterInput->setText(recordingMaster);
     ui->showSynopsisInput->setText("");
     //temp
     sortCastData(APICast);

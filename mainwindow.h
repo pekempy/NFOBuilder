@@ -27,7 +27,7 @@ private slots:
 
     void on_showLocationInput_textChanged(const QString &arg1);
 
-    void on_showTaglineInput_textChanged(const QString &arg1);
+    void on_showMasterInput_textChanged(const QString &arg1);
 
     void on_showSynopsisInput_textChanged();
 
