@@ -290,6 +290,13 @@ void MainWindow::clearAllValues(){
     ui->showSynopsisInput->setText("");
     ui->castTable->clearContents();
 
+    //clear genres
+    ui->checkbox_musical->setChecked(false);
+    ui->checkbox_ballet->setChecked(false);
+    ui->checkbox_play->setChecked(false);
+    ui->checkbox_bootleg->setChecked(false);
+    ui->checkbox_proshot->setChecked(false);
+
     //set column 0 in cast table contents to ""
     for (int i = 0; i < ui->castTable->rowCount(); i++) {
         //i = row
