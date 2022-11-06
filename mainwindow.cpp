@@ -398,10 +398,10 @@ void MainWindow::sortCastData(QString cast) {
 void MainWindow::on_encoraLookupButton_clicked()
 {
     for(int i = 0; i < 39; ++i) {
-        ui->castTable->item(i, 0)->setText(NULL);
-        ui->castTable->item(i, 1)->setText(NULL);
-        ui->castTable->item(i, 2)->setText(NULL);
-        ui->castTable->item(i, 3)->setText(NULL);
+        ui->castTable->item(i, 0)->setText("");
+        ui->castTable->item(i, 1)->setText("");
+        ui->castTable->item(i, 2)->setText("");
+        ui->castTable->item(i, 3)->setText("");
     }
 
     QString siteData = getDataFromURL();
