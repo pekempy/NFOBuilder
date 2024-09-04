@@ -1198,6 +1198,20 @@
       </item>
      </layout>
     </item>
+    <item row="16" column="1">
+     <widget class="QCheckBox" name="isNFTCheckbox">
+      <property name="text">
+       <string>Currently NFT</string>
+      </property>
+     </widget>
+    </item>
+    <item row="16" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Recording is NFT?</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

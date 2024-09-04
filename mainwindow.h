@@ -21,27 +21,27 @@ private slots:
 
     void onCreateNFOClicked();
 
-    void onShowNameInputTextChanged(const QString &arg1);
+    void on_showNameInput_textChanged(const QString &arg1);
 
-    void onShowDateInputTextChanged(const QString &arg1);
+    void on_showDateInput_textChanged(const QString &arg1);
 
-    void onShowLocationInputTextChanged(const QString &arg1);
+    void on_showLocationInput_textChanged(const QString &arg1);
 
-    void onShowMasterInputTextChanged(const QString &arg1);
+    void on_showMasterInput_textEdited(const QString &arg1);
 
-    void onShowSynopsisInputTextChanged();
+    void on_showSynopsisInput_textChanged();
 
-    void onOutputFolderInputTextChanged(const QString &arg1);
+    void on_outputFolderInput_textChanged(const QString &arg1);
 
-    void onOutputFolderInputEditingFinished();
+    void on_outputFolderInput_editingFinished();
 
     void onCastTableCellChanged(int row, int column);
 
     void onCastTableCellClicked(int row, int column);
 
-    void onEncoraIDTextTextChanged(const QString &arg1);
+    void on_encoraIDText_textChanged(const QString &arg1);
 
-    void onEncoraAPIKeyTextChanged(const QString &arg1);
+    void on_encoraAPIKey_textChanged(const QString &arg1);
 
     void onEncoraLookupButtonClicked();
 
@@ -53,15 +53,17 @@ private slots:
 
     void modifyGenre(std::string genre, bool checked);
 
-    void onCheckboxMusicalToggled(bool checked);
+    void on_checkbox_musical_toggled(bool checked);
 
-    void onCheckboxPlayToggled(bool checked);
+    void on_checkbox_play_toggled(bool checked);
 
-    void onCheckboxBalletToggled(bool checked);
+    void on_checkbox_ballet_toggled(bool checked);
 
-    void onCheckboxBootlegToggled(bool checked);
+    void on_checkbox_bootleg_toggled(bool checked);
 
-    void onCheckboxProshotToggled(bool checked);
+    void on_checkbox_proshot_toggled(bool checked);
+
+    void on_isNFTCheckbox_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;

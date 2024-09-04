@@ -108,9 +108,6 @@ void MainWindow::linkChangedHandler(const QString &actorName, const QString &url
 }
 
 //TODO - pull director / master
-//TODO - Somehow work out how to add NFT content rating if show is NFT
-//TODO - Pull genres once they are added
-//Build the XML and return
 string buildXML(){
     string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
@@ -202,7 +199,8 @@ void MainWindow::onCreateNFOClicked() {
 
 //Set variables upon text changed for each section.
 
-void MainWindow::onEncoraIDTextTextChanged(const QString &arg1)
+// TODO: update to pull from new API
+void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
 {
     encoraID = arg1.toStdString();
     encoraIDURL = "https://api.gladosplex.gq/Recordings/" + encoraID;
@@ -213,7 +211,8 @@ void MainWindow::onEncoraIDTextTextChanged(const QString &arg1)
     }
 }
 
-void MainWindow::onEncoraAPIKeyTextChanged(const QString &arg1)
+// TODO: update to validate API key on-site
+void MainWindow::on_encoraAPIKey_textChanged(const QString &arg1)
 {
     encoraAPIKey = arg1.toStdString();
     QVariant apiKey(arg1);
@@ -225,12 +224,12 @@ void MainWindow::onEncoraAPIKeyTextChanged(const QString &arg1)
     }
 }
 
-void MainWindow::onShowNameInputTextChanged(const QString &arg1)
+void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 {
     showName = arg1.toStdString();
 }
 
-void MainWindow::onShowDateInputTextChanged(const QString &arg1)
+void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 {
     showDate = arg1.toStdString();
     //also get year from date
@@ -240,27 +239,27 @@ void MainWindow::onShowDateInputTextChanged(const QString &arg1)
 
 }
 
-void MainWindow::onShowLocationInputTextChanged(const QString &arg1)
+void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
 {
     showLocation = arg1.toStdString();
 }
 
-void MainWindow::onShowMasterInputTextChanged(const QString &arg1)
+void MainWindow::on_showMasterInput_textEdited(const QString &arg1)
 {
     showDirector = arg1.toStdString();
 }
 
-void MainWindow::onShowSynopsisInputTextChanged()
+void MainWindow::on_showSynopsisInput_textChanged()
 {
     showPlot = ui->showSynopsisInput->toPlainText().toStdString();
 }
 
-void MainWindow::onOutputFolderInputTextChanged(const QString &arg1)
+void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
 {
     outputFolder = arg1.toStdString();
 }
 
-void MainWindow::onOutputFolderInputEditingFinished()
+void MainWindow::on_outputFolderInput_editingFinished()
 {
     //check if last char is '\' if not add it.
     char last = outputFolder.back();
@@ -296,6 +295,7 @@ void MainWindow::clearAllValues(){
     ui->checkbox_play->setChecked(false);
     ui->checkbox_bootleg->setChecked(false);
     ui->checkbox_proshot->setChecked(false);
+    ui->isNFTCheckbox->setChecked(false);
 
     //set column 0 in cast table contents to ""
     for (int i = 0; i < ui->castTable->rowCount(); i++) {
@@ -437,6 +437,8 @@ void MainWindow::onEncoraLookupButtonClicked()
     QDate currentDate = QDate::currentDate();
     if(currentDate < nftDateAsDate || nftForever == true) {
         isNFT = true;
+        ui->isNFTCheckbox->setChecked(true);
+        ui->isNFTCheckbox->setDisabled(true);
     }
     ui->showNameInput->setText(APIShowName);
     ui->showDateInput->setText(APIShowDate);
@@ -446,9 +448,6 @@ void MainWindow::onEncoraLookupButtonClicked()
     //temp
     sortCastData(APICast);
 }
-
-
-
 
 
 //genre checkboxes
@@ -466,36 +465,41 @@ void MainWindow::modifyGenre(string genre, bool checked) {
     //uncomment for genre debugging
     //ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
 }
-void MainWindow::onCheckboxMusicalToggled(bool checked)
+void MainWindow::on_checkbox_musical_toggled(bool checked)
 {
     string genre = "   <genre>Musical</genre>\n";
     modifyGenre(genre, checked);
 }
 
-void MainWindow::onCheckboxPlayToggled(bool checked)
+void MainWindow::on_checkbox_play_toggled(bool checked)
 {
     string genre = "   <genre>Play</genre>\n";
     modifyGenre(genre, checked);
 }
 
-
-void MainWindow::onCheckboxBalletToggled(bool checked)
+void MainWindow::on_checkbox_ballet_toggled(bool checked)
 {
     string genre = "   <genre>Ballet</genre>\n";
     modifyGenre(genre, checked);
 }
 
-
-void MainWindow::onCheckboxBootlegToggled(bool checked)
+void MainWindow::on_checkbox_bootleg_toggled(bool checked)
 {
     string genre = "   <genre>Bootleg</genre>\n";
     modifyGenre(genre, checked);
 }
 
-
-void MainWindow::onCheckboxProshotToggled(bool checked)
+void MainWindow::on_checkbox_proshot_toggled(bool checked)
 {
     string genre = "   <genre>Pro-Shot</genre>\n";
     modifyGenre(genre, checked);
 }
 
+void MainWindow::on_isNFTCheckbox_toggled(bool checked)
+{
+    if (checked) {
+        isNFT = true;
+    } else {
+        isNFT = false;
+    }
+}
