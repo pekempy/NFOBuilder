@@ -65,6 +65,8 @@ private slots:
 
     void on_isNFTCheckbox_toggled(bool checked);
 
+    void on_resetAPIKeyButton_pressed();
+
 private:
     Ui::MainWindow *ui;
     void clearAllValues();

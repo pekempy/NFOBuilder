@@ -224,6 +224,20 @@ void MainWindow::on_encoraAPIKey_textChanged(const QString &arg1)
     }
 }
 
+void MainWindow::on_resetAPIKeyButton_pressed()
+{
+    ui->encoraAPIKey->setText("");
+    mySettings.remove("encora-apikey");
+    ui->encoraAPIKey->show();
+    ui->encoraAPIKeyLabel->show();
+    if(encoraID.length() > 0 && encoraAPIKey.length() > 0) {
+        ui->encoraLookupButton->setEnabled(true);
+    } else {
+        ui->encoraLookupButton->setEnabled(false);
+    }
+}
+
+
 void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 {
     showName = arg1.toStdString();
@@ -503,3 +517,4 @@ void MainWindow::on_isNFTCheckbox_toggled(bool checked)
         isNFT = false;
     }
 }
+
