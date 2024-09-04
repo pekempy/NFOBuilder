@@ -44,7 +44,7 @@ string castMember = "  <actor>\n"
                     "       <type>Actor</type>\n"
                     "   </actor>";
 string outputFolder;
-string encoraCookie;
+string encoraAPIKey;
 bool isNFT = false;
 FileDownloader * file;
 //settings file set org/app name
@@ -62,14 +62,14 @@ MainWindow::MainWindow(QWidget *parent)
     QRegularExpressionValidator *validator = new QRegularExpressionValidator(re, this);
     ui->showDateInput->setValidator(validator);
     ui->encoraIDText->setValidator(new QIntValidator(1,2147483647, this));
-    if(mySettings.value("encora-cookie").toString() != "") {
-        QString cookie = mySettings.value("encora-cookie").toString();
-        ui->encoraCookie->setText(cookie);
-        ui->encoraCookie->hide();
-        ui->encoraCookieLabel->hide();
+    if(mySettings.value("encora-apikey").toString() != "") {
+        QString apikey = mySettings.value("encora-apikey").toString();
+        ui->encoraAPIKey->setText(apikey);
+        ui->encoraAPIKey->hide();
+        ui->encoraAPIKeyLabel->hide();
     } else {
-        ui->encoraCookie->show();
-        ui->encoraCookieLabel->show();
+        ui->encoraAPIKey->show();
+        ui->encoraAPIKeyLabel->show();
     }
     ui->outputFolderInput->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/");
 }
@@ -150,7 +150,7 @@ bool fileExists(QString handle){
        { return true; } else { return false; }
     }
 
-void MainWindow::on_CreateNFO_clicked() {
+void MainWindow::onCreateNFOClicked() {
   //Loop to create XML for cast information
   for (int i = 0; i < ui -> castTable -> rowCount(); i++) {
     for (int j = 0; j < ui -> castTable -> columnCount(); j++) {
@@ -202,35 +202,35 @@ void MainWindow::on_CreateNFO_clicked() {
 
 //Set variables upon text changed for each section.
 
-void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
+void MainWindow::onEncoraIDTextTextChanged(const QString &arg1)
 {
     encoraID = arg1.toStdString();
     encoraIDURL = "https://api.gladosplex.gq/Recordings/" + encoraID;
-    if(encoraID.length() > 0 && encoraCookie.length() > 0) {
+    if(encoraID.length() > 0 && encoraAPIKey.length() > 0) {
         ui->encoraLookupButton->setEnabled(true);
     } else {
         ui->encoraLookupButton->setEnabled(false);
     }
 }
 
-void MainWindow::on_encoraCookie_textChanged(const QString &arg1)
+void MainWindow::onEncoraAPIKeyTextChanged(const QString &arg1)
 {
-    encoraCookie = arg1.toStdString();
-    QVariant cookie(arg1);
-    mySettings.setValue("encora-cookie", cookie);
-    if(encoraID.length() > 0 && encoraCookie.length() > 0) {
+    encoraAPIKey = arg1.toStdString();
+    QVariant apiKey(arg1);
+    mySettings.setValue("encora-apikey", apiKey);
+    if(encoraID.length() > 0 && encoraAPIKey.length() > 0) {
         ui->encoraLookupButton->setEnabled(true);
     } else {
         ui->encoraLookupButton->setEnabled(false);
     }
 }
 
-void MainWindow::on_showNameInput_textChanged(const QString &arg1)
+void MainWindow::onShowNameInputTextChanged(const QString &arg1)
 {
     showName = arg1.toStdString();
 }
 
-void MainWindow::on_showDateInput_textChanged(const QString &arg1)
+void MainWindow::onShowDateInputTextChanged(const QString &arg1)
 {
     showDate = arg1.toStdString();
     //also get year from date
@@ -240,27 +240,27 @@ void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 
 }
 
-void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
+void MainWindow::onShowLocationInputTextChanged(const QString &arg1)
 {
     showLocation = arg1.toStdString();
 }
 
-void MainWindow::on_showMasterInput_textChanged(const QString &arg1)
+void MainWindow::onShowMasterInputTextChanged(const QString &arg1)
 {
     showDirector = arg1.toStdString();
 }
 
-void MainWindow::on_showSynopsisInput_textChanged()
+void MainWindow::onShowSynopsisInputTextChanged()
 {
     showPlot = ui->showSynopsisInput->toPlainText().toStdString();
 }
 
-void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
+void MainWindow::onOutputFolderInputTextChanged(const QString &arg1)
 {
     outputFolder = arg1.toStdString();
 }
 
-void MainWindow::on_outputFolderInput_editingFinished()
+void MainWindow::onOutputFolderInputEditingFinished()
 {
     //check if last char is '\' if not add it.
     char last = outputFolder.back();
@@ -316,7 +316,7 @@ void MainWindow::clearAllValues(){
 }
 
 
-void MainWindow::on_castTable_cellChanged(int row, int column)
+void MainWindow::onCastTableCellChanged(int row, int column)
 {
     string test;
     //when each row, column a changed, update link in column 4 for that row.
@@ -341,7 +341,7 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
 
 
 
-void MainWindow::on_castTable_cellClicked(int row, int column)
+void MainWindow::onCastTableCellClicked(int row, int column)
 {
     string urlToOpen = "";
     if(column == 3){
@@ -355,7 +355,7 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
 QString MainWindow::getDataFromURL(){
     QNetworkAccessManager manager;
     QNetworkRequest request = QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL)));
-    request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraCookie)));
+    request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraAPIKey)));
     QNetworkReply *response = manager.get(request);
     QEventLoop event;
     connect(response, SIGNAL(finished()), &event, SLOT(quit()));
@@ -393,16 +393,16 @@ void MainWindow::sortCastData(QString cast) {
             }
         }
     } else {
-        ui->showSynopsisInput->setText("Invalid Encora Cookie or ID - please check your details.");
-        QMessageBox::critical(0, "Cookie Invalid", "Encora Cookie Invalid. Enter Data manually, or set a new cookie.");
-        ui->encoraCookie->setText("");
-        mySettings.remove("encora-cookie");
-        ui->encoraCookie->show();
-        ui->encoraCookieLabel->show();
+        ui->showSynopsisInput->setText("Invalid Encora API Key or ID - please check your details.");
+        QMessageBox::critical(0, "API Key Invalid", "Encora API Key invalid or rate limited.");
+        ui->encoraAPIKey->setText("");
+        mySettings.remove("encora-apikey");
+        ui->encoraAPIKey->show();
+        ui->encoraAPIKeyLabel->show();
     }
 }
 
-void MainWindow::on_encoraLookupButton_clicked()
+void MainWindow::onEncoraLookupButtonClicked()
 {
     for(int i = 0; i < 39; ++i) {
         ui->castTable->item(i, 0)->setText("");
@@ -466,34 +466,34 @@ void MainWindow::modifyGenre(string genre, bool checked) {
     //uncomment for genre debugging
     //ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
 }
-void MainWindow::on_checkbox_musical_toggled(bool checked)
+void MainWindow::onCheckboxMusicalToggled(bool checked)
 {
     string genre = "   <genre>Musical</genre>\n";
     modifyGenre(genre, checked);
 }
 
-void MainWindow::on_checkbox_play_toggled(bool checked)
+void MainWindow::onCheckboxPlayToggled(bool checked)
 {
     string genre = "   <genre>Play</genre>\n";
     modifyGenre(genre, checked);
 }
 
 
-void MainWindow::on_checkbox_ballet_toggled(bool checked)
+void MainWindow::onCheckboxBalletToggled(bool checked)
 {
     string genre = "   <genre>Ballet</genre>\n";
     modifyGenre(genre, checked);
 }
 
 
-void MainWindow::on_checkbox_bootleg_toggled(bool checked)
+void MainWindow::onCheckboxBootlegToggled(bool checked)
 {
     string genre = "   <genre>Bootleg</genre>\n";
     modifyGenre(genre, checked);
 }
 
 
-void MainWindow::on_checkbox_proshot_toggled(bool checked)
+void MainWindow::onCheckboxProshotToggled(bool checked)
 {
     string genre = "   <genre>Pro-Shot</genre>\n";
     modifyGenre(genre, checked);

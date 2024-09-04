@@ -19,31 +19,31 @@ public slots:
 
 private slots:
 
-    void on_CreateNFO_clicked();
+    void onCreateNFOClicked();
 
-    void on_showNameInput_textChanged(const QString &arg1);
+    void onShowNameInputTextChanged(const QString &arg1);
 
-    void on_showDateInput_textChanged(const QString &arg1);
+    void onShowDateInputTextChanged(const QString &arg1);
 
-    void on_showLocationInput_textChanged(const QString &arg1);
+    void onShowLocationInputTextChanged(const QString &arg1);
 
-    void on_showMasterInput_textChanged(const QString &arg1);
+    void onShowMasterInputTextChanged(const QString &arg1);
 
-    void on_showSynopsisInput_textChanged();
+    void onShowSynopsisInputTextChanged();
 
-    void on_outputFolderInput_textChanged(const QString &arg1);
+    void onOutputFolderInputTextChanged(const QString &arg1);
 
-    void on_outputFolderInput_editingFinished();
+    void onOutputFolderInputEditingFinished();
 
-    void on_castTable_cellChanged(int row, int column);
+    void onCastTableCellChanged(int row, int column);
 
-    void on_castTable_cellClicked(int row, int column);
+    void onCastTableCellClicked(int row, int column);
 
-    void on_encoraIDText_textChanged(const QString &arg1);
+    void onEncoraIDTextTextChanged(const QString &arg1);
 
-    void on_encoraCookie_textChanged(const QString &arg1);
+    void onEncoraAPIKeyTextChanged(const QString &arg1);
 
-    void on_encoraLookupButton_clicked();
+    void onEncoraLookupButtonClicked();
 
     QString getDataFromURL();
 
@@ -53,15 +53,15 @@ private slots:
 
     void modifyGenre(std::string genre, bool checked);
 
-    void on_checkbox_musical_toggled(bool checked);
+    void onCheckboxMusicalToggled(bool checked);
 
-    void on_checkbox_play_toggled(bool checked);
+    void onCheckboxPlayToggled(bool checked);
 
-    void on_checkbox_ballet_toggled(bool checked);
+    void onCheckboxBalletToggled(bool checked);
 
-    void on_checkbox_bootleg_toggled(bool checked);
+    void onCheckboxBootlegToggled(bool checked);
 
-    void on_checkbox_proshot_toggled(bool checked);
+    void onCheckboxProshotToggled(bool checked);
 
 private:
     Ui::MainWindow *ui;
