@@ -285,6 +285,7 @@ void MainWindow::on_outputFolderInput_editingFinished()
 
 
 void MainWindow::clearAllValues(){
+
     //clear global strings
     showName = "";
     showDate = "";
@@ -296,6 +297,7 @@ void MainWindow::clearAllValues(){
     encoraID = "";
 
     //clear UI values
+    ui->encoraIDText->setText("");
     ui->showNameInput->setText("");
     ui->showDateInput->setText("");
     ui->showLocationInput->setText("");
