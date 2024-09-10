@@ -13,6 +13,7 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QSettings>
 #include <QStandardPaths>
 
@@ -147,7 +148,7 @@ bool fileExists(QString handle){
        { return true; } else { return false; }
     }
 
-void MainWindow::onCreateNFOClicked() {
+void MainWindow::on_CreateNFO_clicked() {
   //Loop to create XML for cast information
   for (int i = 0; i < ui -> castTable -> rowCount(); i++) {
     for (int j = 0; j < ui -> castTable -> columnCount(); j++) {
@@ -203,7 +204,7 @@ void MainWindow::onCreateNFOClicked() {
 void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
 {
     encoraID = arg1.toStdString();
-    encoraIDURL = "https://api.gladosplex.gq/Recordings/" + encoraID;
+    encoraIDURL = "https://encora.it/api/recording/" + encoraID;
     if(encoraID.length() > 0 && encoraAPIKey.length() > 0) {
         ui->encoraLookupButton->setEnabled(true);
     } else {
@@ -330,7 +331,7 @@ void MainWindow::clearAllValues(){
 }
 
 
-void MainWindow::onCastTableCellChanged(int row, int column)
+void MainWindow::on_castTable_cellChanged(int row, int column)
 {
     string test;
     //when each row, column a changed, update link in column 4 for that row.
@@ -350,19 +351,6 @@ void MainWindow::onCastTableCellChanged(int row, int column)
                 cellLink->setText(QString::fromStdString(url));
             }
         }
-    }
-}
-
-
-
-void MainWindow::onCastTableCellClicked(int row, int column)
-{
-    string urlToOpen = "";
-    if(column == 3){
-        urlToOpen = ui->castTable->item(row,column)->text().toStdString();
-    }
-    if (urlToOpen != ""){
-        QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
 }
 
@@ -387,83 +375,6 @@ QString MainWindow::getCharacterName(QString character) {
     return characterFixed;
 }
 
-void MainWindow::sortCastData(QString cast) {
-
-    QStringList castList = cast.split(", ");
-    if(castList[0] != "") {
-        for (int i = 0; i < castList.size(); ++i) {
-         //update cast table with each actor (role)
-            if(castList[i].contains("(")) {
-                //castList contains parenthesis
-                QStringList performer = castList[i].split("(");
-                ui->castTable->item(i,0)->setText(QString::fromStdString(performer[0].toStdString()));
-                QString characterName = getCharacterName(QString::fromStdString(performer[1].toStdString()));
-                ui->castTable->item(i,1)->setText(characterName);
-            }
-            else {
-                QString performer = castList[i];
-                ui->castTable->item(i,0)->setText(QString::fromStdString(performer.toStdString()));
-                ui->castTable->item(i,1)->setText("Ensemble");
-            }
-        }
-    } else {
-        ui->showSynopsisInput->setText("Invalid Encora API Key or ID - please check your details.");
-        QMessageBox::critical(0, "API Key Invalid", "Encora API Key invalid or rate limited.");
-        ui->encoraAPIKey->setText("");
-        mySettings.remove("encora-apikey");
-        ui->encoraAPIKey->show();
-        ui->encoraAPIKeyLabel->show();
-    }
-}
-
-void MainWindow::onEncoraLookupButtonClicked()
-{
-    for(int i = 0; i < 39; ++i) {
-        ui->castTable->item(i, 0)->setText("");
-        ui->castTable->item(i, 1)->setText("");
-        ui->castTable->item(i, 2)->setText("");
-        ui->castTable->item(i, 3)->setText("");
-    }
-
-    QString siteData = getDataFromURL();
-    //ui->showSynopsisInput->setText(siteData);
-    QJsonObject obj;
-    QJsonDocument doc = QJsonDocument::fromJson(siteData.toUtf8());
-    if(doc.isObject()){
-        obj = doc.object();
-    }
-    QString APICast = obj["cast"].toString();
-    QString APIShowDate = obj["recordingDate"].toString();
-    QJsonObject apiMaster = obj["master"].toObject();
-    QString recordingMaster = apiMaster["name"].toString();
-
-    QJsonObject recordingTour = obj["recordingTour"].toObject();
-    QJsonObject recordingProd = recordingTour["production"].toObject();
-
-    QString APIShowName = recordingProd["name"].toString();
-    QString APIShowTour = recordingTour["name"].toString();
-
-    //nft checks!
-    QString nftDate = obj["nftDate"].toString();
-    bool nftForever = obj["isNftForever"].toBool();
-    QString nftDateShorter = nftDate.left(10);
-    QDate nftDateAsDate = QDate::fromString(nftDateShorter, "yyyy-MM-dd");
-    QDate currentDate = QDate::currentDate();
-    if(currentDate < nftDateAsDate || nftForever == true) {
-        isNFT = true;
-        ui->isNFTCheckbox->setChecked(true);
-        ui->isNFTCheckbox->setDisabled(true);
-    }
-    ui->showNameInput->setText(APIShowName);
-    ui->showDateInput->setText(APIShowDate);
-    ui->showLocationInput->setText(APIShowTour);
-    ui->showMasterInput->setText(recordingMaster);
-    ui->showSynopsisInput->setText("");
-    //temp
-    sortCastData(APICast);
-}
-
-
 //genre checkboxes
 void MainWindow::modifyGenre(string genre, bool checked) {
     std::cout << "Genre: " + genre;
@@ -476,8 +387,6 @@ void MainWindow::modifyGenre(string genre, bool checked) {
                               [] (char a, char b) {return a == '\n' && b == '\n';}),
                   showGenre.end());
     }
-    //uncomment for genre debugging
-    //ui->showSynopsisInput->setText(QString::fromStdString(showGenre));
 }
 void MainWindow::on_checkbox_musical_toggled(bool checked)
 {
@@ -515,6 +424,107 @@ void MainWindow::on_isNFTCheckbox_toggled(bool checked)
         isNFT = true;
     } else {
         isNFT = false;
+    }
+}
+
+
+void MainWindow::on_encoraLookupButton_clicked()
+{
+    // Clear the cast table to "" value instead of null
+    for(int i = 0; i < 39; ++i) {
+        ui->castTable->item(i, 0)->setText("");
+        ui->castTable->item(i, 1)->setText("");
+        ui->castTable->item(i, 2)->setText("");
+        ui->castTable->item(i, 3)->setText("");
+    }
+
+    // Fetch the data from the Encora API using the users API key
+    QString siteData = getDataFromURL();
+    QJsonObject obj;
+    QJsonDocument doc = QJsonDocument::fromJson(siteData.toUtf8());
+    if(doc.isObject()){
+        obj = doc.object();
+    }
+
+    // Extract show, tour, and master data
+    QString APIShowName = obj["show"].toString();
+    ui->showNameInput->setText(APIShowName);
+    QString APIShowTour = obj["tour"].toString();
+    ui->showLocationInput->setText(APIShowTour);
+    QString recordingMaster = obj["master"].toString();
+    ui->showMasterInput->setText(recordingMaster);
+
+    // Extract date details
+    QJsonObject apiDate = obj["date"].toObject();
+    QString APIShowDate = apiDate["full_date"].toString();
+    ui->showDateInput->setText(APIShowDate);
+
+    // Extract NFT information
+    QJsonObject nftInfo = obj["nft"].toObject();
+    QString nftDate = nftInfo["nft_date"].toString();
+    bool nftForever = nftInfo["nft_forever"].toBool();
+    QString nftDateShorter = nftDate.left(10);
+    QDate nftDateAsDate = QDate::fromString(nftDateShorter, "yyyy-MM-dd");
+    QDate currentDate = QDate::currentDate();
+
+    // Update NFT UI elements
+    if(currentDate < nftDateAsDate || nftForever == true) {
+        isNFT = true;
+        ui->isNFTCheckbox->setChecked(true);
+        ui->isNFTCheckbox->setDisabled(true);
+    }
+
+    // Extract cast information
+    QJsonArray castArray = obj["cast"].toArray();
+    for (int i = 0; i < castArray.size() && i < ui->castTable->rowCount(); ++i) {
+        QJsonObject castObj = castArray[i].toObject();
+
+        // Extract performer and character details
+        QJsonObject performer = castObj["performer"].toObject();
+        QString performerName = performer["name"].toString();
+
+        QJsonObject character = castObj["character"].toObject();
+        QString characterName = character["name"].toString();
+
+        QString statusLabel = "";
+        if (castObj.contains("status") && !castObj["status"].isNull()) {
+            statusLabel = castObj["status"].toObject()["abbreviation"].toString();
+            if (!statusLabel.isEmpty()) {
+                characterName = statusLabel + " " + characterName;
+            }
+        }
+
+        // Populate the castTable with performer, character, and status
+        ui->castTable->item(i, 0)->setText(performerName);
+        ui->castTable->item(i, 1)->setText(characterName);
+        QString googleSearchUrl = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + performerName;
+        ui->castTable->item(i, 3)->setText(googleSearchUrl);
+    }
+
+    // Auto-check Genres
+
+    // Extract recording type and update checkboxes
+    QJsonObject metadata = obj["metadata"].toObject();
+    QString recordingType = metadata["recording_type"].toString();
+
+    if (recordingType == "bootleg") {
+        ui->checkbox_bootleg->setChecked(true);
+    }
+    if (recordingType == "pro-shot") {
+        ui->checkbox_proshot->setChecked(true);
+    }
+
+}
+
+
+void MainWindow::on_castTable_cellClicked(int row, int column)
+{
+    string urlToOpen = "";
+    if(column == 3){
+        urlToOpen = ui->castTable->item(row,column)->text().toStdString();
+    }
+    if (urlToOpen != ""){
+        QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
 }
 

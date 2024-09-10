@@ -19,7 +19,11 @@ public slots:
 
 private slots:
 
-    void onCreateNFOClicked();
+    void on_CreateNFO_clicked();
+
+    QString getDataFromURL();
+
+    QString getCharacterName(const QString character);
 
     void on_showNameInput_textChanged(const QString &arg1);
 
@@ -35,21 +39,9 @@ private slots:
 
     void on_outputFolderInput_editingFinished();
 
-    void onCastTableCellChanged(int row, int column);
-
-    void onCastTableCellClicked(int row, int column);
-
     void on_encoraIDText_textChanged(const QString &arg1);
 
     void on_encoraAPIKey_textChanged(const QString &arg1);
-
-    void onEncoraLookupButtonClicked();
-
-    QString getDataFromURL();
-
-    void sortCastData(const QString cast);
-
-    QString getCharacterName(const QString character);
 
     void modifyGenre(std::string genre, bool checked);
 
@@ -66,6 +58,12 @@ private slots:
     void on_isNFTCheckbox_toggled(bool checked);
 
     void on_resetAPIKeyButton_pressed();
+
+    void on_encoraLookupButton_clicked();
+
+    void on_castTable_cellClicked(int row, int column);
+
+    void on_castTable_cellChanged(int row, int column);
 
 private:
     Ui::MainWindow *ui;
