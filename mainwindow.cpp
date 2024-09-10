@@ -108,7 +108,6 @@ void MainWindow::linkChangedHandler(const QString &actorName, const QString &url
     actorNameFromDialog = "";
 }
 
-//TODO - pull director / master
 string buildXML(){
     string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
@@ -449,10 +448,13 @@ void MainWindow::on_encoraLookupButton_clicked()
     // Extract show, tour, and master data
     QString APIShowName = obj["show"].toString();
     ui->showNameInput->setText(APIShowName);
+    showName = APIShowName.toStdString();
     QString APIShowTour = obj["tour"].toString();
     ui->showLocationInput->setText(APIShowTour);
+    showLocation = APIShowTour.toStdString();
     QString recordingMaster = obj["master"].toString();
     ui->showMasterInput->setText(recordingMaster);
+    showDirector = recordingMaster.toStdString();
 
     // Extract date details
     QJsonObject apiDate = obj["date"].toObject();
