@@ -39,3 +39,6 @@ DISTFILES += \
 
 RESOURCES += \
     resources.qrc
+
+VERSION = 1.3.0
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
