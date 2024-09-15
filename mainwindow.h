@@ -14,55 +14,40 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-public slots:
-    void linkChangedHandler(const QString &actorName, const QString &url);
-
 private slots:
 
     void on_CreateNFO_clicked();
 
     QString getDataFromURL();
+    void modifyGenre(const std::string& genre, bool checked);
 
-    QString getCharacterName(const QString character);
-
+    // textChanged events for the form
     void on_showNameInput_textChanged(const QString &arg1);
-
     void on_showDateInput_textChanged(const QString &arg1);
-
     void on_showLocationInput_textChanged(const QString &arg1);
-
-    void on_showMasterInput_textEdited(const QString &arg1);
-
+    void on_showMasterInput_textChanged(const QString &arg1);
     void on_showSynopsisInput_textChanged();
-
     void on_outputFolderInput_textChanged(const QString &arg1);
-
     void on_outputFolderInput_editingFinished();
-
     void on_encoraIDText_textChanged(const QString &arg1);
-
     void on_encoraAPIKey_textChanged(const QString &arg1);
 
-    void modifyGenre(std::string genre, bool checked);
-
+    // Genre toggles
     void on_checkbox_musical_toggled(bool checked);
-
     void on_checkbox_play_toggled(bool checked);
-
     void on_checkbox_ballet_toggled(bool checked);
-
     void on_checkbox_bootleg_toggled(bool checked);
-
     void on_checkbox_proshot_toggled(bool checked);
 
+    // NFT
     void on_isNFTCheckbox_toggled(bool checked);
 
+    // API buttons
     void on_resetAPIKeyButton_pressed();
-
     void on_encoraLookupButton_clicked();
 
+    // cast table functions
     void on_castTable_cellClicked(int row, int column);
-
     void on_castTable_cellChanged(int row, int column);
 
 private:
@@ -71,4 +56,4 @@ private:
     QString actorNameFromDialog;
     QString downloadLinkFromDialog;
 };
-#endif // MAINWINDOW_H
+#endif
