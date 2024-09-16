@@ -229,7 +229,6 @@ void MainWindow::on_CreateNFO_clicked() {
          m->setAttribute(Qt::WA_DeleteOnClose);
          m->setModal(false);
          m->show();
-         // 1140495
     }
   }
   // Reset the form
