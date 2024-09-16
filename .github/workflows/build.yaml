@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake qt6-base-dev qt6-tools-dev-tools linuxdeployqt dos2unix
+          sudo apt-get install -y build-essential cmake linuxdeployqt dos2unix wget
 
       - name: Install Qt 6.4.0
         run: |
@@ -24,6 +24,12 @@ jobs:
           ./qt-opensource-linux-x64-6.4.0.run --script /tmp/install_qt.qs
         env:
           QT_INSTALL_PREFIX: /opt/qt6
+
+      - name: Set up Qt environment
+        run: |
+          export PATH=/opt/qt6/bin:$PATH
+          export LD_LIBRARY_PATH=/opt/qt6/lib:$LD_LIBRARY_PATH
+          qmake --version
 
       - name: Remove old AppImage if exists
         run: |
