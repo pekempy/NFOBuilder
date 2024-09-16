@@ -209,8 +209,10 @@ jobs:
       #
       - name: Make NSIS installer
         run: |
-          echo Current Directory Contents:
-          dir
+          echo Current Directory/NFOBuilder Contents:
+          dir NFOBuilder
+          echo Current Directory/NFOBuilder/bin Contents:
+          dir NFOBuilder/bin
           move "${{env.APPLICATION}}" deploy\windows\nsis\
           cd deploy\windows\nsis
           makensis /X"SetCompressor /FINAL lzma" setup.nsi
