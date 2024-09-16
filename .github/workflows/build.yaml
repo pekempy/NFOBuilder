@@ -121,10 +121,10 @@ jobs:
 
       #
       # Deploy application
-      # -qmldir="${{env.QML_DIR_NIX}} from line 127
+      # -qmldir="${{env.QML_DIR_NIX}}" from line 127
       - name: Deploy app
         run: |
-          macdeployqt ${{env.EXECUTABLE}}.app"
+          macdeployqt ${{env.EXECUTABLE}}.app
           mv "${{env.EXECUTABLE}}.app" "${{env.APPLICATION}}.app"
 
       #
@@ -202,7 +202,7 @@ jobs:
           windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime 
           mkdir "${{env.APPLICATION}}"
           move bin "${{env.APPLICATION}}"
-          xcopy deploy\windows\resources\plex-nfo.ico "${{env.APPLICATION}}"
+          xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
 
       #
       # Create NSIS installer
