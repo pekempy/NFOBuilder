@@ -3,7 +3,7 @@
 #include <vector>
 #include <iterator>
 #include <fstream>
-
+#include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDesktopServices>
@@ -48,6 +48,7 @@ string castMember = "  <actor>\n"
                     "   </actor>";
 string outputFolder;
 string encoraAPIKey;
+QString headshotsFileName = "headshots.json";
 bool isNFT = false;
 FileDownloader * file;
 
@@ -140,9 +141,45 @@ string buildXML(){
 // Test that the NFO has been created successfully
 bool fileExists(QString handle){
     QFileInfo check_file(handle);
+    QString absolute_file_path = check_file.absolutePath();
+    if(!QDir(absolute_file_path).exists()) {
+        QDir().mkdir(absolute_file_path);
+    }
     if(check_file.exists() && check_file.isFile())
        { return true; } else { return false; }
+}
+
+QJsonDocument loadJson(QString fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::ReadOnly);
+    return QJsonDocument().fromJson(jsonFile.readAll());
+}
+
+void saveJson(QJsonDocument document, QString fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::WriteOnly);
+    jsonFile.write(document.toJson());
+}
+
+void setHeadshotsFile(QJsonObject obj, QString headshotsFilePath) {
+    QJsonDocument doc(obj);
+    saveJson(doc, headshotsFilePath);
+}
+
+QJsonObject getHeadshotsFile(QString headshotsFilePath) {
+    if(!fileExists(headshotsFilePath)) {
+        QString emptyFileStr = "{}";
+        QJsonDocument emptyDoc = QJsonDocument::fromJson(emptyFileStr.toUtf8());
+        saveJson(emptyDoc, headshotsFilePath);
     }
+    QJsonDocument doc = loadJson(headshotsFilePath);
+
+    QJsonObject obj;
+    if(doc.isObject()){
+        obj = doc.object();
+    }
+    return obj;
+}
 
 // Create the NFO file
 void MainWindow::on_CreateNFO_clicked() {
@@ -187,9 +224,12 @@ void MainWindow::on_CreateNFO_clicked() {
      myfile << output;
      myfile.close();
      if (fileExists(qsFileName)) {
-        QMessageBox msg;
-        msg.setText("Successfully created: " + qsFileName);
-        msg.exec();
+         auto m = new QMessageBox();
+         m->setText("Successfully created: " + qsFileName);
+         m->setAttribute(Qt::WA_DeleteOnClose);
+         m->setModal(false);
+         m->show();
+         // 1140495
     }
   }
   // Reset the form
@@ -301,7 +341,6 @@ void MainWindow::clearAllValues(){
     ui->showLocationInput->setText("");
     ui->showMasterInput->setText("");
     ui->showSynopsisInput->setText("");
-    ui->castTable->clearContents();
 
     //clear genres
     ui->checkbox_musical->setChecked(false);
@@ -311,16 +350,12 @@ void MainWindow::clearAllValues(){
     ui->checkbox_proshot->setChecked(false);
     ui->isNFTCheckbox->setChecked(false);
 
-    // Set the entire cast table to new QTableWidgetItems
-    // This prevents it crashing when setting them to ""
-    for (int i = 0; i < ui->castTable->rowCount(); i++) {
-        for (int col = 0; col <= 3; col++) {
-            QTableWidgetItem * cell = ui->castTable->item(i, col);
-            if (!cell) {
-                cell = new QTableWidgetItem();
-                ui->castTable->setItem(i, col, cell);
-            }
-        }
+    // Set the entire cast table to empty
+    for(int i = 0; i < 39; ++i) {
+        ui->castTable->item(i, 0)->setText("");
+        ui->castTable->item(i, 1)->setText("");
+        ui->castTable->item(i, 2)->setText("");
+        ui->castTable->item(i, 3)->setText("");
     }
     ui->castTable->scrollToTop();
 }
@@ -342,6 +377,67 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
                 string actorName = actor->text().toStdString();
                 string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
                 cellLink->setText(QString::fromStdString(url));
+            }
+        }
+    }
+
+    if(column == 0) {
+        QString headshotsFilePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + headshotsFileName;
+        QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
+
+        QTableWidgetItem * performer = ui -> castTable -> item(row, 0);
+        QString performerName = performer->text();
+
+        QTableWidgetItem * headshotCell = ui -> castTable -> item(row, 2);
+        if(performerName.isEmpty()) {
+            headshotCell->setText(QString::fromStdString(""));
+        } else if(headshots.keys().contains(performerName)) {
+            QJsonValueRef headshot = headshots[performerName];
+            headshotCell->setText(headshot.toString());
+        } else {
+            headshotCell->setText(QString::fromStdString(""));
+        }
+    }
+    if(column == 2) {
+        QString headshotsFilePath = QStandardPaths::writableLocation((QStandardPaths::AppDataLocation)) + "/" + headshotsFileName;
+        QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
+
+        QTableWidgetItem * actor = ui -> castTable -> item(row, 0);
+        QString actorName = actor->text();
+
+        if(actorName.isEmpty()) {
+            return;
+        }
+
+        QTableWidgetItem * headshotCell = ui -> castTable -> item(row, 2);
+        QString headshotText = headshotCell->text();
+
+        if(!headshots.keys().contains(actorName) && !headshotText.isEmpty()) {
+            headshots[actorName] = headshotText;
+            setHeadshotsFile(headshots, headshotsFilePath);
+        } else {
+            if(headshots[actorName] != headshotText) {
+                if(headshotText.isEmpty()) {
+                    headshots.remove(actorName);
+                } else {
+                    headshots[actorName] = headshotText;
+                }
+                setHeadshotsFile(headshots, headshotsFilePath);
+            }
+        }
+
+        for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
+            if(i == row) {
+                continue;
+            }
+            QTableWidgetItem * nextActor = ui -> castTable -> item(i, 0);
+            QString nextActorName = nextActor->text();
+            if(nextActorName == actorName) {
+                QTableWidgetItem * nextHeadshotCell = ui -> castTable -> item(i, 2);
+                QString nextHeadshotText = nextHeadshotCell->text();
+                if(nextHeadshotText != headshotText) {
+                    nextHeadshotCell->setText(headshotText);
+                }
             }
         }
     }
@@ -460,6 +556,9 @@ void MainWindow::on_encoraLookupButton_clicked()
         ui->isNFTCheckbox->setDisabled(true);
     }
 
+    QString headshotsFilePath = QStandardPaths::writableLocation((QStandardPaths::AppDataLocation)) + "/" + headshotsFileName;
+    QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
+
     // Extract cast information
     QJsonArray castArray = obj["cast"].toArray();
     for (int i = 0; i < castArray.size() && i < ui->castTable->rowCount(); ++i) {
@@ -484,6 +583,10 @@ void MainWindow::on_encoraLookupButton_clicked()
         // Populate the castTable with performer, character, and status
         ui->castTable->item(i, 0)->setText(performerName);
         ui->castTable->item(i, 1)->setText(characterName);
+        if(headshots.keys().contains(performerName)) {
+            QJsonValueRef headshot = headshots[performerName];
+            ui->castTable->item(i, 2)->setText(headshot.toString());
+        }
         QString googleSearchUrl = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + performerName;
         ui->castTable->item(i, 3)->setText(googleSearchUrl);
     }
