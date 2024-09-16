@@ -204,65 +204,15 @@ jobs:
           move bin "${{env.APPLICATION}}"
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
 
-      - name: Verify Directories
-        shell: pwsh
+      #
+      # Create NSIS installer
+      #
+      - name: Make NSIS installer
         run: |
-          # Print the current directory
-          Write-Host "Current Directory: $(Get-Location)"
-
-          # List directories and files in the current location
-          Write-Host "Contents of $(Get-Location):"
-          Get-ChildItem -Recurse | ForEach-Object { Write-Host $_.FullName }
-
-      - name: Ensure NSIS Directory Exists
-        shell: pwsh
-        run: |
-          if (-not (Test-Path -Path "deploy\windows\nsis\")) {
-            New-Item -ItemType Directory -Path "deploy\windows\nsis\"
-          }
-
-      - name: Move and Build NSIS Installer
-        shell: pwsh
-        env:
-          VERSION: 1.3.2
-          EXECUTABLE: NFO-Creator
-          APPLICATION: NFOBuilder
-        run: |
-          # Path to the source executable
-          $sourceExePath = "D:\a\NFOBuilder\NFOBuilder\NFOBuilder\bin\NFO-Creator.exe"
-          # Destination directory for the executable
-          $destinationPath = "deploy\windows\nsis\NFO-Creator.exe"
-
-          # Check if the source executable exists
-          if (Test-Path -Path $sourceExePath) {
-              Write-Host "Executable found at $sourceExePath."
-              
-              # Move the executable to the target location
-              Move-Item -Path $sourceExePath -Destination $destinationPath -ErrorAction Stop
-          } else {
-              Write-Error "Executable at $sourceExePath does not exist."
-          }
-
-          # Check if setup.nsi exists in the target directory
-          $nsiPath = "deploy\windows\nsis\setup.nsi"
-          if (-not (Test-Path -Path $nsiPath)) {
-              Write-Error "NSIS script $nsiPath does not exist."
-
-              # List contents of the directory for debugging
-              Write-Host "Contents of the deploy\windows\nsis directory:"
-              Get-ChildItem -Path "deploy\windows\nsis"
-          } else {
-              Write-Host "NSIS script found at $nsiPath."
-
-              # Change to the target directory
-              Set-Location -Path "deploy\windows\nsis"
-
-              # Run NSIS to create the installer
-              & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
-
-              # Rename the generated installer
-              Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
-          }
+          move "${{env.APPLICATION}}" deploy\windows\nsis\
+          cd deploy\windows\nsis
+          makensis /X"SetCompressor /FINAL lzma" setup.nsi
+          ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
 
       #
       # Upload installer to build artifacts
