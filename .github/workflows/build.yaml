@@ -1,78 +1,218 @@
-name: Build and Package
+---
+#--------------------------------------------------------------------------------
+# Workflow configuration
+#--------------------------------------------------------------------------------
 
+name: Build
 on:
-  push:
-    branches:
-      - "*"
+  push: # Run on push
+  pull_request: # Run on pull-request
+
+#--------------------------------------------------------------------------------
+# Define application name & version
+#--------------------------------------------------------------------------------
+
+env:
+  VERSION: "1.3.2"
+  EXECUTABLE: "NFOBuilder"
+  APPLICATION: "NFO Builder"
+  QMAKE_PROJECT: "NFOBuilder.pro"
+  QML_DIR_NIX: "assets/qml"
+  QML_DIR_WIN: "assets\\qml"
+
+#--------------------------------------------------------------------------------
+# Workflow jobs (GNU/Linux, macOS & Windows)
+#--------------------------------------------------------------------------------
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  #
+  # GNU/Linux build (we run on Ubuntu 16.04 to generate AppImage)
+  #
+  build-linux:
+    runs-on: ubuntu-16.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      #
+      # Checkout the repository
+      #
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
+      #
+      # Install Qt
+      #
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+
+      #
+      # Install additional dependencies, stolen from:
+      # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
+      #
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake qt6-base-dev qt6-tools-dev-tools dos2unix wget
+          sudo apt-get install libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
-      - name: Install Qt 6.4.0
+      #
+      # Compile the application
+      #
+      - name: Compile
         run: |
-          wget https://download.qt.io/official_releases/qt/6.4/6.4.0/qt-opensource-linux-x64-6.4.0.run
-          chmod +x qt-opensource-linux-x64-6.4.0.run
-          ./qt-opensource-linux-x64-6.4.0.run --script /tmp/install_qt.qs || true
-        env:
-          QT_INSTALL_PREFIX: /opt/qt6
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
+          make -j8
 
-      - name: Set up Qt environment
+      #
+      # Create the AppImage
+      #
+      - name: Create AppImage
         run: |
-          export PATH=/opt/qt6/bin:$PATH
-          export LD_LIBRARY_PATH=/opt/qt6/lib:$LD_LIBRARY_PATH
-          echo "Qt path: $PATH"
-          echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-          qmake --version
+          make INSTALL_ROOT=appdir install
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+          chmod a+x linuxdeployqt
+          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -qmldir="${{env.QML_DIR_NIX}}"
 
-      - name: Remove old AppImage if exists
-        run: |
-          rm -rf $HOME/Documents/Programming/C++/NFOBuilder
-          rm -rf $HOME/Documents/Programming/C++/release
-          rm $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage 2> /dev/null
+      #
+      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
+      #
+      - name: Rename AppImage
+        run: mv *.AppImage ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
 
-      - name: Clone repository
-        run: |
-          git clone https://github.com/pekempy/NFOBuilder $HOME/Documents/Programming/C++/NFOBuilder --quiet
-          mv $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.linux.pro.user $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.pro.user
-
-      - name: Build project
-        run: |
-          cd $HOME/Documents/Programming/C++/NFOBuilder
-          qmake NFO-Creator.pro
-          make
-          mkdir -p $HOME/Documents/Programming/C++/release
-          mv NFO-Creator $HOME/Documents/Programming/C++/release/NFOBuilder
-
-      - name: Copy AppImage files
-        run: |
-          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/NFOBuilder.desktop $HOME/Documents/Programming/C++/release
-          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.png $HOME/Documents/Programming/C++/release/default.png
-          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.ico $HOME/Documents/Programming/C++/release
-          rm -rf $HOME/Documents/Programming/C++/release/resources/
-
-      - name: Install linuxdeployqt
-        uses: miurahr/install-linuxdeployqt-action@v1.0.1
-
-      - name: Build AppImage
-        run: |
-          cd $HOME/Documents/Programming/C++/release
-          dos2unix NFOBuilder.desktop
-          linuxdeployqt $HOME/Documents/Programming/C++/release/NFOBuilder -appimage -unsupported-allow-new-glibc
-          chmod +x $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage
-          $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage $HOME/Documents/Programming/C++/release
-          mv $HOME/Documents/Programming/C++/release/NFO_Builder-x86_64.AppImage $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
-
+      #
+      # Upload AppImage to build artifacts
+      #
       - name: Upload AppImage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
-          name: NFOBuilder-AppImage
-          path: $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-Linux.AppImage
+
+  #
+  # macOS build
+  #
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      #
+      # Checkout the repository
+      #
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      #
+      # Install Qt
+      #
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+
+      #
+      # Compile application
+      #
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          make -j8
+
+      #
+      # Deploy application
+      #
+      - name: Deploy app
+        run: |
+          macdeployqt ${{env.EXECUTABLE}}.app -qmldir="${{env.QML_DIR_NIX}}"
+          mv "${{env.EXECUTABLE}}.app" "${{env.APPLICATION}}.app"
+
+      #
+      # ZIP application "%AppName%-%Version%-macOS.zip"
+      # We use ditto instead of zip to use the same commands as Finder
+      #
+      - name: Create ZIP file
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent "${{env.APPLICATION}}.app" ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+
+      #
+      # Upload ZIP to build artifacts
+      #
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+
+  #
+  # Windows build
+  #
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      #
+      # Checkout the repository
+      #
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      #
+      # Configure MSVC
+      #
+      - name: Configure MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          spectre: true
+
+      #
+      # Install Qt
+      #
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+
+      #
+      # Install NSIS
+      #
+      - name: Install NSIS
+        run: |
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop bucket add extras
+          scoop install nsis
+
+      #
+      # Compile application
+      #
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          nmake
+
+      #
+      # Copy Qt DLLs, compiler runtime & application icon
+      #
+      - name: Deploy
+        run: |
+          mkdir bin
+          move release/${{env.EXECUTABLE}}.exe bin
+          windeployqt bin/${{env.EXECUTABLE}}.exe -qmldir="${{env.QML_DIR_WIN}}" --compiler-runtime
+          mkdir "${{env.APPLICATION}}"
+          move bin "${{env.APPLICATION}}"
+          xcopy deploy\windows\resources\icon.ico "${{env.APPLICATION}}"
+
+      #
+      # Create NSIS installer
+      #
+      - name: Make NSIS installer
+        run: |
+          move "${{env.APPLICATION}}" deploy\windows\nsis\
+          cd deploy\windows\nsis
+          makensis /X"SetCompressor /FINAL lzma" setup.nsi
+          ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
+
+      #
+      # Upload installer to build artifacts
+      #
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
+          path: deploy/windows/nsis/${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
