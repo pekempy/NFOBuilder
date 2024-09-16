@@ -66,13 +66,13 @@ jobs:
 
       #
       # Create the AppImage
-      #
+      # -qmldir="${{env.QML_DIR_NIX}} from line 75
       - name: Create AppImage
         run: |
           make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
-          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so -qmldir="${{env.QML_DIR_NIX}}"
+          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so"
 
       #
       # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
@@ -121,10 +121,10 @@ jobs:
 
       #
       # Deploy application
-      #
+      # -qmldir="${{env.QML_DIR_NIX}} from line 127
       - name: Deploy app
         run: |
-          macdeployqt ${{env.EXECUTABLE}}.app -qmldir="${{env.QML_DIR_NIX}}"
+          macdeployqt ${{env.EXECUTABLE}}.app"
           mv "${{env.EXECUTABLE}}.app" "${{env.APPLICATION}}.app"
 
       #
@@ -194,15 +194,15 @@ jobs:
 
       #
       # Copy Qt DLLs, compiler runtime & application icon
-      #
+      # #-qmldir="${{env.QML_DIR_WIN}}" from line 202
       - name: Deploy
         run: |
           mkdir bin
           move release/${{env.EXECUTABLE}}.exe bin
-          windeployqt bin/${{env.EXECUTABLE}}.exe -qmldir="${{env.QML_DIR_WIN}}" --compiler-runtime
+          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime 
           mkdir "${{env.APPLICATION}}"
           move bin "${{env.APPLICATION}}"
-          xcopy deploy\windows\resources\icon.ico "${{env.APPLICATION}}"
+          xcopy deploy\windows\resources\plex-nfo.ico "${{env.APPLICATION}}"
 
       #
       # Create NSIS installer
