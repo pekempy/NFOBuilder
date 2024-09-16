@@ -1,80 +1,67 @@
-name: Qt Application Build and Deploy
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  # Build and deploy for Linux
-  linux-build:
- name: Build and Package AppImage
+name: Build and Package
 
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential cmake qt6-base-dev qt6-tools-dev-tools linuxdeployqt dos2unix
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install Qt 6.4.0
-      run: |
-        wget https://download.qt.io/official_releases/qt/6.4/6.4.0/qt-opensource-linux-x64-6.4.0.run
-        chmod +x qt-opensource-linux-x64-6.4.0.run
-        ./qt-opensource-linux-x64-6.4.0.run --script /tmp/install_qt.qs
-      env:
-        QT_INSTALL_PREFIX: /opt/qt6
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake qt6-base-dev qt6-tools-dev-tools linuxdeployqt dos2unix
 
-    - name: Remove old AppImage if exists
-      run: |
-        rm -rf $HOME/Documents/Programming/C++/NFOBuilder
-        rm -rf $HOME/Documents/Programming/C++/release
-        rm $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage 2> /dev/null
+      - name: Install Qt 6.4.0
+        run: |
+          wget https://download.qt.io/official_releases/qt/6.4/6.4.0/qt-opensource-linux-x64-6.4.0.run
+          chmod +x qt-opensource-linux-x64-6.4.0.run
+          ./qt-opensource-linux-x64-6.4.0.run --script /tmp/install_qt.qs
+        env:
+          QT_INSTALL_PREFIX: /opt/qt6
 
-    - name: Clone repository
-      run: |
-        git clone https://github.com/pekempy/NFOBuilder $HOME/Documents/Programming/C++/NFOBuilder --quiet
-        mv $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.linux.pro.user $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.pro.user
+      - name: Remove old AppImage if exists
+        run: |
+          rm -rf $HOME/Documents/Programming/C++/NFOBuilder
+          rm -rf $HOME/Documents/Programming/C++/release
+          rm $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage 2> /dev/null
 
-    - name: Build project
-      run: |
-        cd $HOME/Documents/Programming/C++/NFOBuilder
-        qmake NFO-Creator.pro
-        make
-        mkdir -p $HOME/Documents/Programming/C++/release
-        mv NFO-Creator $HOME/Documents/Programming/C++/release/NFOBuilder
+      - name: Clone repository
+        run: |
+          git clone https://github.com/pekempy/NFOBuilder $HOME/Documents/Programming/C++/NFOBuilder --quiet
+          mv $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.linux.pro.user $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.pro.user
 
-    - name: Copy AppImage files
-      run: |
-        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/NFOBuilder.desktop $HOME/Documents/Programming/C++/release
-        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.png $HOME/Documents/Programming/C++/release/default.png
-        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.ico $HOME/Documents/Programming/C++/release
-        rm -rf $HOME/Documents/Programming/C++/release/resources/
+      - name: Build project
+        run: |
+          cd $HOME/Documents/Programming/C++/NFOBuilder
+          qmake NFO-Creator.pro
+          make
+          mkdir -p $HOME/Documents/Programming/C++/release
+          mv NFO-Creator $HOME/Documents/Programming/C++/release/NFOBuilder
 
-    - name: Build AppImage
-      run: |
-        cd $HOME/Documents/Programming/C++/release
-        dos2unix NFOBuilder.desktop
-        linuxdeployqt $HOME/Documents/Programming/C++/release/NFOBuilder -appimage -unsupported-allow-new-glibc
-        chmod +x $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage
-        $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage $HOME/Documents/Programming/C++/release
-        mv $HOME/Documents/Programming/C++/release/NFO_Builder-x86_64.AppImage $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
+      - name: Copy AppImage files
+        run: |
+          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/NFOBuilder.desktop $HOME/Documents/Programming/C++/release
+          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.png $HOME/Documents/Programming/C++/release/default.png
+          cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.ico $HOME/Documents/Programming/C++/release
+          rm -rf $HOME/Documents/Programming/C++/release/resources/
 
-    - name: Upload AppImage
-      uses: actions/upload-artifact@v3
-      with:
-        name: NFOBuilder-AppImage
-        path: $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
+      - name: Build AppImage
+        run: |
+          cd $HOME/Documents/Programming/C++/release
+          dos2unix NFOBuilder.desktop
+          linuxdeployqt $HOME/Documents/Programming/C++/release/NFOBuilder -appimage -unsupported-allow-new-glibc
+          chmod +x $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage
+          $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage $HOME/Documents/Programming/C++/release
+          mv $HOME/Documents/Programming/C++/release/NFO_Builder-x86_64.AppImage $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: NFOBuilder-AppImage
+          path: $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
