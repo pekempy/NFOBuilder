@@ -231,14 +231,19 @@ jobs:
           EXECUTABLE: NFO-Creator
           APPLICATION: NFOBuilder
         run: |
-          # Check if the source directory exists
-          if (Test-Path -Path "$env:APPLICATION") {
-            Write-Host "Directory $env:APPLICATION exists."
+          # Path to the source executable
+          $sourceExePath = "D:\a\NFOBuilder\NFOBuilder\NFOBuilder\bin\NFO-Creator.exe"
+          # Destination directory for the executable
+          $destinationPath = "deploy\windows\nsis\NFO-Creator.exe"
+
+          # Check if the source executable exists
+          if (Test-Path -Path $sourceExePath) {
+            Write-Host "Executable found at $sourceExePath."
             
-            # Move the directory to the target location
-            Move-Item -Path "$env:APPLICATION" -Destination "deploy\windows\nsis\" -ErrorAction Stop
+            # Move the executable to the target location
+            Move-Item -Path $sourceExePath -Destination $destinationPath -ErrorAction Stop
           } else {
-            Write-Error "Directory $env:APPLICATION does not exist."
+            Write-Error "Executable at $sourceExePath does not exist."
           }
 
           # Change to the target directory
