@@ -66,13 +66,13 @@ jobs:
 
       #
       # Create the AppImage
-      # -qmldir="${{env.QML_DIR_NIX}} from line 75
+      # -qmldir="${{env.QML_DIR_NIX}}" from line 75
       - name: Create AppImage
         run: |
           make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
-          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so"
+          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       #
       # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
