@@ -1,0 +1,103 @@
+name: Qt Application Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Build and deploy for Windows
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: "5.15.2" # Change to your Qt version
+          host: windows
+          target: desktop
+          arch: win64_msvc2019_64 # Use appropriate architecture
+
+      - name: Build Qt application
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH=$env:Qt5_DIR
+          cmake --build .
+
+      - name: Run windeployqt
+        run: |
+          $env:Qt5_DIR/bin/windeployqt.exe build\YourApp.exe
+
+      - name: Upload artifact (Windows)
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-build
+          path: build/
+
+  # Build and deploy for macOS
+  macos-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: "5.15.2" # Change to your Qt version
+          host: mac
+          target: desktop
+
+      - name: Build Qt application
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=$Qt5_DIR
+          cmake --build .
+
+      - name: Run macdeployqt
+        run: |
+          $Qt5_DIR/bin/macdeployqt build/YourApp.app
+
+      - name: Upload artifact (macOS)
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-build
+          path: build/
+
+  # Build and deploy for Linux
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install qt5-default qtdeclarative5-dev qtmultimedia5-dev qtquickcontrols2-5-dev libqt5svg5-dev
+
+      - name: Build Qt application
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "Unix Makefiles"
+          cmake --build .
+
+      - name: Run linuxdeployqt
+        run: |
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-x86_64.AppImage
+          chmod +x linuxdeployqt-x86_64.AppImage
+          ./linuxdeployqt-x86_64.AppImage build/YourApp -appimage
+
+      - name: Upload artifact (Linux)
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
+          path: build/
