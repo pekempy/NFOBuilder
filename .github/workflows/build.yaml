@@ -209,6 +209,8 @@ jobs:
       #
       - name: Make NSIS installer
         run: |
+          echo Current Directory Contents:
+          dir
           move "${{env.APPLICATION}}" deploy\windows\nsis\
           cd deploy\windows\nsis
           makensis /X"SetCompressor /FINAL lzma" setup.nsi
