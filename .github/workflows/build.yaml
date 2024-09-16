@@ -9,96 +9,72 @@ on:
       - main
 
 jobs:
-  # Build and deploy for Windows
-  windows-build:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: "5.15.2"
-          host: windows
-          target: desktop
-          arch: win64_msvc2019_64
-
-      - name: Build Qt application
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Ninja" -DCMAKE_PREFIX_PATH=$env:Qt5_DIR
-          cmake --build .
-
-      - name: Run windeployqt
-        run: |
-          $env:Qt5_DIR/bin/windeployqt.exe build\YourApp.exe
-
-      - name: Upload artifact (Windows)
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows-build
-          path: build/
-
-  # Build and deploy for macOS
-  macos-build:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: "5.15.2"
-          host: mac
-          target: desktop
-
-      - name: Build Qt application
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Unix Makefiles" -DCMAKE_PREFIX_PATH=$Qt5_DIR
-          cmake --build .
-
-      - name: Run macdeployqt
-        run: |
-          $Qt5_DIR/bin/macdeployqt build/YourApp.app
-
-      - name: Upload artifact (macOS)
-        uses: actions/upload-artifact@v3
-        with:
-          name: macos-build
-          path: build/
-
   # Build and deploy for Linux
   linux-build:
+ name: Build and Package AppImage
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake qt6-base-dev qt6-tools-dev-tools linuxdeployqt dos2unix
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qtbase5-dev qtdeclarative5-dev qtmultimedia5-dev qtquickcontrols2-5-dev libqt5svg5-dev
+    - name: Install Qt 6.4.0
+      run: |
+        wget https://download.qt.io/official_releases/qt/6.4/6.4.0/qt-opensource-linux-x64-6.4.0.run
+        chmod +x qt-opensource-linux-x64-6.4.0.run
+        ./qt-opensource-linux-x64-6.4.0.run --script /tmp/install_qt.qs
+      env:
+        QT_INSTALL_PREFIX: /opt/qt6
 
-      - name: Build Qt application
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Unix Makefiles"
-          cmake --build .
+    - name: Remove old AppImage if exists
+      run: |
+        rm -rf $HOME/Documents/Programming/C++/NFOBuilder
+        rm -rf $HOME/Documents/Programming/C++/release
+        rm $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage 2> /dev/null
 
-      - name: Run linuxdeployqt
-        run: |
-          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-x86_64.AppImage
-          chmod +x linuxdeployqt-x86_64.AppImage
-          ./linuxdeployqt-x86_64.AppImage build/YourApp -appimage
+    - name: Clone repository
+      run: |
+        git clone https://github.com/pekempy/NFOBuilder $HOME/Documents/Programming/C++/NFOBuilder --quiet
+        mv $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.linux.pro.user $HOME/Documents/Programming/C++/NFOBuilder/NFO-Creator.pro.user
 
-      - name: Upload artifact (Linux)
-        uses: actions/upload-artifact@v3
-        with:
-          name: linux-build
-          path: build/
+    - name: Build project
+      run: |
+        cd $HOME/Documents/Programming/C++/NFOBuilder
+        qmake NFO-Creator.pro
+        make
+        mkdir -p $HOME/Documents/Programming/C++/release
+        mv NFO-Creator $HOME/Documents/Programming/C++/release/NFOBuilder
+
+    - name: Copy AppImage files
+      run: |
+        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/NFOBuilder.desktop $HOME/Documents/Programming/C++/release
+        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.png $HOME/Documents/Programming/C++/release/default.png
+        cp $HOME/Documents/Programming/C++/NFOBuilder/resources/plex-nfo.ico $HOME/Documents/Programming/C++/release
+        rm -rf $HOME/Documents/Programming/C++/release/resources/
+
+    - name: Build AppImage
+      run: |
+        cd $HOME/Documents/Programming/C++/release
+        dos2unix NFOBuilder.desktop
+        linuxdeployqt $HOME/Documents/Programming/C++/release/NFOBuilder -appimage -unsupported-allow-new-glibc
+        chmod +x $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage
+        $HOME/Documents/Programming/C++/NFOBuilder/resources/appimagetool-x86_64.AppImage $HOME/Documents/Programming/C++/release
+        mv $HOME/Documents/Programming/C++/release/NFO_Builder-x86_64.AppImage $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
+
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v3
+      with:
+        name: NFOBuilder-AppImage
+        path: $HOME/Documents/Programming/C++/NFOBuilder-linux-release.AppImage
