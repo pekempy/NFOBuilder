@@ -235,29 +235,33 @@ jobs:
 
           # Check if the source executable exists
           if (Test-Path -Path $sourceExePath) {
-            Write-Host "Executable found at $sourceExePath."
-            
-            # Move the executable to the target location
-            Move-Item -Path $sourceExePath -Destination $destinationPath -ErrorAction Stop
+              Write-Host "Executable found at $sourceExePath."
+              
+              # Move the executable to the target location
+              Move-Item -Path $sourceExePath -Destination $destinationPath -ErrorAction Stop
           } else {
-            Write-Error "Executable at $sourceExePath does not exist."
+              Write-Error "Executable at $sourceExePath does not exist."
           }
 
           # Check if setup.nsi exists in the target directory
           $nsiPath = "deploy\windows\nsis\setup.nsi"
           if (-not (Test-Path -Path $nsiPath)) {
-            Write-Error "NSIS script $nsiPath does not exist."
+              Write-Error "NSIS script $nsiPath does not exist."
+
+              # List contents of the directory for debugging
+              Write-Host "Contents of the deploy\windows\nsis directory:"
+              Get-ChildItem -Path "deploy\windows\nsis"
           } else {
-            Write-Host "NSIS script found at $nsiPath."
+              Write-Host "NSIS script found at $nsiPath."
 
-            # Change to the target directory
-            Set-Location -Path "deploy\windows\nsis"
+              # Change to the target directory
+              Set-Location -Path "deploy\windows\nsis"
 
-            # Run NSIS to create the installer
-            & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
+              # Run NSIS to create the installer
+              & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
 
-            # Rename the generated installer
-            Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
+              # Rename the generated installer
+              Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
           }
 
       #
