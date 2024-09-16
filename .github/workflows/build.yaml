@@ -6,7 +6,7 @@
 name: Build
 on:
   push: # Run on push
-  pull_request: # Run on pull-request
+  #tag:
 
 #--------------------------------------------------------------------------------
 # Define application name & version
@@ -204,18 +204,41 @@ jobs:
           move bin "${{env.APPLICATION}}"
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
 
+      - name: Verify Directories
+        shell: pwsh
+        run: |
+          # Print the current directory
+          Write-Host "Current Directory: $(Get-Location)"
+
+          # List directories and files in the current location
+          Write-Host "Contents of $(Get-Location):"
+          Get-ChildItem -Recurse | ForEach-Object { Write-Host $_.FullName }
+
+      - name: Ensure NSIS Directory Exists
+        shell: pwsh
+        run: |
+          if (-not (Test-Path -Path "deploy\windows\nsis\")) {
+            New-Item -ItemType Directory -Path "deploy\windows\nsis\"
+          }
+
       #
       # Create NSIS installer
       #
-      - name: Make NSIS installer
+      - name: Move and Build NSIS Installer
         shell: pwsh
+        env:
+          VERSION: 1.3.2
+          EXECUTABLE: NFO-Creator
+          APPLICATION: NFOBuilder
         run: |
           # Check if the source directory exists
-          if (Test-Path -Path "${{env.APPLICATION}}") {
+          if (Test-Path -Path "$env:APPLICATION") {
+            Write-Host "Directory $env:APPLICATION exists."
+            
             # Move the directory to the target location
-            Move-Item -Path "${{env.APPLICATION}}" -Destination "deploy\windows\nsis\" -ErrorAction Stop
+            Move-Item -Path "$env:APPLICATION" -Destination "deploy\windows\nsis\" -ErrorAction Stop
           } else {
-            Write-Error "Directory ${env.APPLICATION} does not exist."
+            Write-Error "Directory $env:APPLICATION does not exist."
           }
 
           # Change to the target directory
@@ -225,7 +248,7 @@ jobs:
           & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
 
           # Rename the generated installer
-          Rename-Item -Path "*.exe" -NewName "$($env.EXECUTABLE)-$($env.VERSION)-Windows.exe"
+          Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
 
       #
       # Upload installer to build artifacts
