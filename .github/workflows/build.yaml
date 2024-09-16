@@ -221,9 +221,6 @@ jobs:
             New-Item -ItemType Directory -Path "deploy\windows\nsis\"
           }
 
-      #
-      # Create NSIS installer
-      #
       - name: Move and Build NSIS Installer
         shell: pwsh
         env:
@@ -246,14 +243,22 @@ jobs:
             Write-Error "Executable at $sourceExePath does not exist."
           }
 
-          # Change to the target directory
-          Set-Location -Path "deploy\windows\nsis"
+          # Check if setup.nsi exists in the target directory
+          $nsiPath = "deploy\windows\nsis\setup.nsi"
+          if (-not (Test-Path -Path $nsiPath)) {
+            Write-Error "NSIS script $nsiPath does not exist."
+          } else {
+            Write-Host "NSIS script found at $nsiPath."
 
-          # Run NSIS to create the installer
-          & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
+            # Change to the target directory
+            Set-Location -Path "deploy\windows\nsis"
 
-          # Rename the generated installer
-          Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
+            # Run NSIS to create the installer
+            & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
+
+            # Rename the generated installer
+            Rename-Item -Path "*.exe" -NewName "$($env:EXECUTABLE)-$($env:VERSION)-Windows.exe"
+          }
 
       #
       # Upload installer to build artifacts
