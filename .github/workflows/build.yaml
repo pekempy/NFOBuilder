@@ -72,7 +72,7 @@ jobs:
           make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
-          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       #
       # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
@@ -208,11 +208,24 @@ jobs:
       # Create NSIS installer
       #
       - name: Make NSIS installer
+        shell: pwsh
         run: |
-          move "${{env.APPLICATION}}" deploy\windows\nsis\
-          cd deploy\windows\nsis
-          makensis /X"SetCompressor /FINAL lzma" setup.nsi
-          ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
+          # Check if the source directory exists
+          if (Test-Path -Path "${{env.APPLICATION}}") {
+            # Move the directory to the target location
+            Move-Item -Path "${{env.APPLICATION}}" -Destination "deploy\windows\nsis\" -ErrorAction Stop
+          } else {
+            Write-Error "Directory ${env.APPLICATION} does not exist."
+          }
+
+          # Change to the target directory
+          Set-Location -Path "deploy\windows\nsis"
+
+          # Run NSIS to create the installer
+          & "makensis.exe" /X"SetCompressor /FINAL lzma" "setup.nsi"
+
+          # Rename the generated installer
+          Rename-Item -Path "*.exe" -NewName "$($env.EXECUTABLE)-$($env.VERSION)-Windows.exe"
 
       #
       # Upload installer to build artifacts
