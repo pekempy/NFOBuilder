@@ -22,9 +22,10 @@
 #include "ui_mainwindow.h"
 #include "filedownloader.h"
 
-
-using std::vector; using std::string;
-using std::endl; using std::copy;
+using std::vector;
+using std::string;
+using std::endl;
+using std::copy;
 
 //global strings
 string encoraID;
@@ -50,9 +51,11 @@ string encoraAPIKey;
 QString headshotsFileName = "headshots.json";
 bool isNFT = false;
 FileDownloader * file;
+
 //settings file set org/app name
 QSettings mySettings("Pekempy","NFO Builder");
 
+// Set up the MainWindow UI
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -77,39 +80,31 @@ MainWindow::MainWindow(QWidget *parent)
     ui->outputFolderInput->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/");
 }
 
+// On close, delete the UI
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
+// Query Encora API for the recording data
+QString MainWindow::getDataFromURL(){
+    QNetworkAccessManager manager;
+    QNetworkRequest request = QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL)));
+    request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraAPIKey)));
+    QNetworkReply *response = manager.get(request);
+    QEventLoop event;
+    connect(response, SIGNAL(finished()), &event, SLOT(quit()));
+    event.exec();
+    QString source = response->readAll();
 
-void MainWindow::linkChangedHandler(const QString &actorName, const QString &url) {
-    actorNameFromDialog = actorName;
-    downloadLinkFromDialog = url;
-    //find actor name in table and add the link
-    auto table = ui->castTable;
-    //QTextStream out(stderr);
-    int actorRow;
-    for (int col = 0; col<table->columnCount(); col++) {
-        QModelIndexList results = table->model()->match(
-                    table->model()->index(0, col),
-                    Qt::DisplayRole,
-                    actorName,
-                    -1,
-                    Qt::MatchContains);
-        for (QModelIndex idx:results)
-            actorRow = idx.row();
+    // handle incorrect encora ID
+    if (source.contains("Call to a member function getFormattedRecording() on null")) {
+        QMessageBox::warning(this, "Error", "Encora ID lookup failed. Please check the ID and try again.");
     }
-    QTableWidgetItem * dlLink = ui->castTable->item(actorRow,2);
-    if(!dlLink) {
-        dlLink = new QTableWidgetItem();
-        ui->castTable->setItem(actorRow,2,dlLink);
-    }
-    dlLink->setText(downloadLinkFromDialog);
-    downloadLinkFromDialog = "";
-    actorNameFromDialog = "";
+    return source;
 }
 
+// Build the XML file
 string buildXML(){
     string xmlPart1 =   "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n"
                         "<movie>\n"
@@ -143,6 +138,7 @@ string buildXML(){
     }
 }
 
+// Test that the NFO has been created successfully
 bool fileExists(QString handle){
     QFileInfo check_file(handle);
     QString absolute_file_path = check_file.absolutePath();
@@ -185,6 +181,7 @@ QJsonObject getHeadshotsFile(QString headshotsFilePath) {
     return obj;
 }
 
+// Create the NFO file
 void MainWindow::on_CreateNFO_clicked() {
   //Loop to create XML for cast information
   for (int i = 0; i < ui -> castTable -> rowCount(); i++) {
@@ -235,12 +232,11 @@ void MainWindow::on_CreateNFO_clicked() {
          // 1140495
     }
   }
+  // Reset the form
   clearAllValues();
 }
 
-//Set variables upon text changed for each section.
-
-// TODO: update to pull from new API
+// When EncoraID text is changed, set variables ready for the API call
 void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
 {
     encoraID = arg1.toStdString();
@@ -252,7 +248,7 @@ void MainWindow::on_encoraIDText_textChanged(const QString &arg1)
     }
 }
 
-// TODO: update to validate API key on-site
+// When API key is set, set the variable and allow the lookup button to be enabled
 void MainWindow::on_encoraAPIKey_textChanged(const QString &arg1)
 {
     encoraAPIKey = arg1.toStdString();
@@ -265,6 +261,7 @@ void MainWindow::on_encoraAPIKey_textChanged(const QString &arg1)
     }
 }
 
+// Remove the stored API key and reset UI elements
 void MainWindow::on_resetAPIKeyButton_pressed()
 {
     ui->encoraAPIKey->setText("");
@@ -278,7 +275,7 @@ void MainWindow::on_resetAPIKeyButton_pressed()
     }
 }
 
-
+// set variables upon textChanged events for each form entry
 void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 {
     showName = arg1.toStdString();
@@ -286,12 +283,13 @@ void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 
 void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 {
-    showDate = arg1.toStdString();
-    //also get year from date
-    if(arg1.toStdString().length() == 10){
-        showYear = arg1.toStdString().erase(arg1.toStdString().length()-6);
+    std::string arg1Str = arg1.toStdString(); // Convert once
+    showDate = arg1Str;
+    if (arg1Str.length() >= 6) {
+        showYear = arg1Str.substr(0, arg1Str.length() - 6);
+    } else {
+        showYear = "";
     }
-
 }
 
 void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
@@ -299,7 +297,7 @@ void MainWindow::on_showLocationInput_textChanged(const QString &arg1)
     showLocation = arg1.toStdString();
 }
 
-void MainWindow::on_showMasterInput_textEdited(const QString &arg1)
+void MainWindow::on_showMasterInput_textChanged(const QString &arg1)
 {
     showDirector = arg1.toStdString();
 }
@@ -316,7 +314,6 @@ void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
 
 void MainWindow::on_outputFolderInput_editingFinished()
 {
-    //check if last char is '\' if not add it.
     char last = outputFolder.back();
     if(last != '/') {
         outputFolder = outputFolder + '/';
@@ -360,8 +357,6 @@ void MainWindow::clearAllValues(){
         ui->castTable->item(i, 2)->setText("");
         ui->castTable->item(i, 3)->setText("");
     }
-
-    //jump to top of cast table
     ui->castTable->scrollToTop();
 }
 
@@ -369,12 +364,10 @@ void MainWindow::clearAllValues(){
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
     string test;
-    //when each row, column a changed, update link in column 4 for that row.
-    if(column != 3) {
+    // When actor/actress name changed, update URL for google search
+    if(column == 0) {
         for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
-            //for each row
             if (i == row && column != 3) {
-                //ui -> castTable -> item(i, 3) -> setText(QString::fromStdString("Test"));
                 QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
                 if(!cellLink){
                     cellLink = new QTableWidgetItem();
@@ -450,40 +443,29 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
     }
 }
 
-QString MainWindow::getDataFromURL(){
-    QNetworkAccessManager manager;
-    QNetworkRequest request = QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL)));
-    request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraAPIKey)));
-    QNetworkReply *response = manager.get(request);
-    QEventLoop event;
-    connect(response, SIGNAL(finished()), &event, SLOT(quit()));
-    event.exec();
-    QString source = response->readAll();
-    return source;
-}
+// Genre Checkbox functions
+void MainWindow::modifyGenre(const std::string& genre, bool checked) {
+    std::cout << "Genre: " << genre << std::endl;
+    std::cout << "Checked: " << (checked ? "true" : "false") << std::endl;
 
-QString MainWindow::getCharacterName(QString character) {
-    QString characterFixed;
-
-    characterFixed = character;
-    characterFixed = characterFixed.replace(")", "");
-
-    return characterFixed;
-}
-
-//genre checkboxes
-void MainWindow::modifyGenre(string genre, bool checked) {
-    std::cout << "Genre: " + genre;
-    std::cout << &"Checked: " [ checked];
-    if(checked) {
-        showGenre += genre;
+    if (checked) {
+        // Add genre to showGenre
+        showGenre += genre + "\n"; // Ensure genre is followed by a newline for separation
     } else {
-        showGenre.replace(showGenre.find(genre), genre.length() - 1, "");
+        // Remove genre from showGenre
+        size_t pos = showGenre.find(genre);
+        while (pos != std::string::npos) {
+            showGenre.erase(pos, genre.length());
+            pos = showGenre.find(genre); // Find the next occurrence
+        }
+
+        // Remove extra newlines
         showGenre.erase(std::unique(showGenre.begin(), showGenre.end(),
-                              [] (char a, char b) {return a == '\n' && b == '\n';}),
-                  showGenre.end());
+                                    [] (char a, char b) { return a == '\n' && b == '\n'; }),
+                        showGenre.end());
     }
 }
+
 void MainWindow::on_checkbox_musical_toggled(bool checked)
 {
     string genre = "   <genre>Musical</genre>\n";
@@ -514,6 +496,7 @@ void MainWindow::on_checkbox_proshot_toggled(bool checked)
     modifyGenre(genre, checked);
 }
 
+// NFT checkbox function
 void MainWindow::on_isNFTCheckbox_toggled(bool checked)
 {
     if (checked) {
@@ -523,7 +506,7 @@ void MainWindow::on_isNFTCheckbox_toggled(bool checked)
     }
 }
 
-
+// API buttons
 void MainWindow::on_encoraLookupButton_clicked()
 {
     // Clear the cast table to "" value instead of null
@@ -544,14 +527,14 @@ void MainWindow::on_encoraLookupButton_clicked()
 
     // Extract show, tour, and master data
     QString APIShowName = obj["show"].toString();
-    ui->showNameInput->setText(APIShowName);
-    showName = APIShowName.toStdString();
     QString APIShowTour = obj["tour"].toString();
-    ui->showLocationInput->setText(APIShowTour);
-    showLocation = APIShowTour.toStdString();
     QString recordingMaster = obj["master"].toString();
-    ui->showMasterInput->setText(recordingMaster);
+    showName = APIShowName.toStdString();
+    showLocation = APIShowTour.toStdString();
     showDirector = recordingMaster.toStdString();
+    ui->showNameInput->setText(APIShowName);
+    ui->showMasterInput->setText(recordingMaster);
+    ui->showLocationInput->setText(APIShowTour);
 
     // Extract date details
     QJsonObject apiDate = obj["date"].toObject();
@@ -588,6 +571,7 @@ void MainWindow::on_encoraLookupButton_clicked()
         QJsonObject character = castObj["character"].toObject();
         QString characterName = character["name"].toString();
 
+        // Add the status to the character name if it exists
         QString statusLabel = "";
         if (castObj.contains("status") && !castObj["status"].isNull()) {
             statusLabel = castObj["status"].toObject()["abbreviation"].toString();
@@ -607,8 +591,6 @@ void MainWindow::on_encoraLookupButton_clicked()
         ui->castTable->item(i, 3)->setText(googleSearchUrl);
     }
 
-    // Auto-check Genres
-
     // Extract recording type and update checkboxes
     QJsonObject metadata = obj["metadata"].toObject();
     QString recordingType = metadata["recording_type"].toString();
@@ -622,7 +604,7 @@ void MainWindow::on_encoraLookupButton_clicked()
 
 }
 
-
+// Handle opening google for actor headshots
 void MainWindow::on_castTable_cellClicked(int row, int column)
 {
     string urlToOpen = "";
