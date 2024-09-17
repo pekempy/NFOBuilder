@@ -1,0 +1,209 @@
+name: Build
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  EXECUTABLE: "NFO-Creator"
+  APPLICATION: "NFOBuilder"
+  QMAKE_PROJECT: "NFO-Creator.pro"
+  QML_DIR_NIX: "assets/qml"
+  QML_DIR_WIN: "assets\\qml"
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          modules: "qtwebengine"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
+          make -j8
+
+      - name: Create AppImage
+        run: |
+          pwd
+          ls -l | grep NFO-Creator
+          make INSTALL_ROOT=appdir install
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+          chmod a+x linuxdeployqt
+          dos2unix resources/*.desktop 
+          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+
+      - name: Rename AppImage
+        run: mv *.AppImage ${{env.EXECUTABLE}}-${{env.VERSION}}-linux.AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-linux.AppImage
+          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-linux.AppImage
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          modules: "qtwebengine"
+
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          make -j8
+
+      - name: Deploy app
+        run: |
+          macdeployqt ${{env.EXECUTABLE}}.app
+          mv "${{env.EXECUTABLE}}.app" "${{env.APPLICATION}}.app"
+
+      - name: Create ZIP file
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent "${{env.APPLICATION}}.app" ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+          path: ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Configure MSVC
+        uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
+          spectre: true
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          modules: "qtwebengine"
+
+      - name: Install NSIS
+        run: |
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop bucket add extras
+          scoop install nsis
+
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          nmake
+
+      - name: Deploy
+        run: |
+          mkdir bin
+          move release/${{env.EXECUTABLE}}.exe bin
+          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime 
+          mkdir "${{env.APPLICATION}}"
+          move bin "${{env.APPLICATION}}"
+          xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
+
+      - name: Make NSIS installer
+        run: |
+          mkdir -p deploy\windows\nsis\ 
+          move "${{env.APPLICATION}}" deploy\windows\nsis\ 
+          makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
+
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
+          path: D:\a\NFOBuilder\NFOBuilder\${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
+
+  release:
+    needs: [build-linux, build-mac, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Fetch Changelog
+        id: fetch_changelog
+        run: |
+          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')
+          CHANGES=$(gh repo view --repo ${{ github.repository }} --json object --jq ".object.history.nodes[] | select(.message != null) | .message" --base "$DEFAULT_BRANCH")
+          echo "CHANGES=$CHANGES" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{env.VERSION}}
+          release_name: Release ${{env.VERSION}}
+          body: |
+            Release of version ${{env.VERSION}}
+
+            ### Changelog
+            ${{ env.CHANGES }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-${{env.VERSION}}-linux.AppImage
+          asset_name: ${{env.EXECUTABLE}}-${{env.VERSION}}-linux.AppImage
+          asset_content_type: application/x-appimage
+
+      - name: Upload macOS ZIP
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+          asset_name: ${{env.EXECUTABLE}}-${{env.VERSION}}-macOS.zip
+          asset_content_type: application/zip
+
+      - name: Upload Windows Installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
+          asset_name: ${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
+          asset_content_type: application/x-msi
