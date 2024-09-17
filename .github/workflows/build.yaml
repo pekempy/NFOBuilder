@@ -161,19 +161,19 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Download Linux AppImage
-        uses: actions/download-artifact@v4.4.0
+        uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-linux.AppImage
           path: ${{env.EXECUTABLE}}-linux.AppImage
 
       - name: Download macOS ZIP
-        uses: actions/download-artifact@v4.4.0
+        uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-macOS.zip
           path: ${{env.EXECUTABLE}}-macOS.zip
 
       - name: Download Windows Installer
-        uses: actions/download-artifact@v4.4.0
+        uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-windows.exe
           path: ${{env.EXECUTABLE}}-windows.exe
