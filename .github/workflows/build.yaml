@@ -1,8 +1,8 @@
 name: Build
 on:
   push:
-    tags:
-      - "v*.*.*"
+    # tags:
+    #   - "v*.*.*"
 
 env:
   EXECUTABLE: "NFO-Creator"
@@ -141,6 +141,8 @@ jobs:
           mkdir -p deploy\windows\nsis\ 
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
           makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
+          dir
+          dir deploy\windows\nsis\
 
       - name: Upload NSIS installer
         uses: actions/upload-artifact@v4.4.0
