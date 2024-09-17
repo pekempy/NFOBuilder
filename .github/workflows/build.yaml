@@ -206,14 +206,12 @@ jobs:
 
       #
       # Create NSIS installer
-      # TODO: - deploy\windows\nsis doesnt seem to exist
-      #       - if it does work, setup.nsi appears to be missing
-      #       - something in nsis setup is borked
+      #
       - name: Make NSIS installer
         run: |
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
           cd deploy\windows\nsis
-          makensis /X"SetCompressor /FINAL lzma" setup.nsi
+          makensis /X"SetCompressor /FINAL lzma" resources\setup.nsi
           ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
 
       #
