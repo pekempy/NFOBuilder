@@ -212,7 +212,11 @@ jobs:
           mkdir -p deploy\windows\nsis\
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
           cd deploy\windows\nsis
-          makensis /X"SetCompressor /FINAL lzma" resources\setup.nsi
+          echo current dir
+          dir
+          echo up one dir
+          dir..
+          makensis /X"SetCompressor /FINAL lzma" ..\resources\setup.nsi
           ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
 
       #
