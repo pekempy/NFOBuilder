@@ -213,7 +213,6 @@ jobs:
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
           makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
           dir
-          ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
 
       #
       # Upload installer to build artifacts
@@ -221,5 +220,5 @@ jobs:
       - name: Upload NSIS installer
         uses: actions/upload-artifact@v4.4.0
         with:
-          name: ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
-          path: deploy/windows/nsis/${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
+          name: ${{env.EXECUTABLE}}-windows.exe
+          path: D:\a\NFOBuilder\NFOBuilder\${{env.EXECUTABLE}}-windows.exe
