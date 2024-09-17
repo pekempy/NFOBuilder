@@ -13,7 +13,7 @@ Caption "${APP_NAME} Setup"
 !define EXECUTABLE "NFO-Creator.exe"
 
 ; Outfile defines the name of the installer
-OutFile "${INSTALLER_NAME}"
+OutFile "D:\a\NFOBuilder\NFOBuilder\${INSTALLER_NAME}"
 
 ; Define default installation directory
 InstallDir "$PROGRAMFILES\${APP_NAME}"
