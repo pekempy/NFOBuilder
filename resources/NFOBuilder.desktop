@@ -5,4 +5,4 @@ Exec=/home/runner/work/NFOBuilder/NFOBuilder/NFO-Creator %F
 Icon=default
 Comment=Create NFO files for Plex.
 Terminal=true
-Categories=Utility
+Categories=Utility;
