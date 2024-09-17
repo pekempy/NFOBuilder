@@ -69,7 +69,8 @@ jobs:
       # -qmldir="${{env.QML_DIR_NIX}}" from line 75
       - name: Create AppImage
         run: |
-          ls
+          pwd
+          ls -l | grep NFO-Creator
           make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
