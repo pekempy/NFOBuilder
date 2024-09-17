@@ -148,64 +148,64 @@ jobs:
           name: ${{env.EXECUTABLE}}-windows.exe
           path: D:\a\NFOBuilder\NFOBuilder\${{env.EXECUTABLE}}-windows.exe
 
-release:
-  needs: [build-linux, build-mac, build-windows]
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4.1.7
-      with:
-        submodules: recursive
+  release:
+    needs: [build-linux, build-mac, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
 
-    - name: Set VERSION environment variable
-      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-    - name: List files
-      run: |
-        pwd
-        ls -la
+      - name: List files
+        run: |
+          pwd
+          ls -la
 
-    - name: Check for Linux AppImage
-      run: |
-        if [ -f "${{ github.workspace }}/${{env.EXECUTABLE}}-linux.AppImage" ]; then
-          echo "File exists"
-        else
-          echo "File does not exist"
-          exit 1
-        fi
+      - name: Check for Linux AppImage
+        run: |
+          if [ -f "${{ github.workspace }}/${{env.EXECUTABLE}}-linux.AppImage" ]; then
+            echo "File exists"
+          else
+            echo "File does not exist"
+            exit 1
+          fi
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{env.VERSION}}
-        release_name: Release ${{env.VERSION}}
-        body: Release of version ${{env.VERSION}}
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{env.VERSION}}
+          release_name: Release ${{env.VERSION}}
+          body: Release of version ${{env.VERSION}}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
 
-    - name: Upload Linux AppImage
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-linux.AppImage
-        asset_name: ${{env.EXECUTABLE}}-linux.AppImage
-        asset_content_type: application/x-appimage
+      - name: Upload Linux AppImage
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-linux.AppImage
+          asset_name: ${{env.EXECUTABLE}}-linux.AppImage
+          asset_content_type: application/x-appimage
 
-    - name: Upload macOS ZIP
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-macOS.zip
-        asset_name: ${{env.EXECUTABLE}}-macOS.zip
-        asset_content_type: application/zip
+      - name: Upload macOS ZIP
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-macOS.zip
+          asset_name: ${{env.EXECUTABLE}}-macOS.zip
+          asset_content_type: application/zip
 
-    - name: Upload Windows Installer
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-windows.exe
-        asset_name: ${{env.EXECUTABLE}}-windows.exe
-        asset_content_type: application/x-msi
+      - name: Upload Windows Installer
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-windows.exe
+          asset_name: ${{env.EXECUTABLE}}-windows.exe
+          asset_content_type: application/x-msi
