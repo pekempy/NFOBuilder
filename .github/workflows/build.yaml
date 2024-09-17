@@ -148,7 +148,7 @@ jobs:
           name: ${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
           path: D:\a\NFOBuilder\NFOBuilder\${{env.EXECUTABLE}}-${{env.VERSION}}-windows.exe
 
-    release:
+  release:
     needs: [build-linux, build-mac, build-windows]
     runs-on: ubuntu-latest
     steps:
@@ -176,7 +176,7 @@ jobs:
           release_name: Release ${{env.VERSION}}
           body: |
             Release of version ${{env.VERSION}}
-            
+
             ### Changelog
             ${{ env.CHANGES }}
           draft: false
