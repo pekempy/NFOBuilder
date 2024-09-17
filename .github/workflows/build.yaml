@@ -157,32 +157,17 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-
-      - name: Fetch Changelog
-        id: fetch_changelog
-        run: |
-          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
-          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name')
-          CHANGES=$(gh repo view --repo ${{ github.repository }} --json object --jq ".object.history.nodes[] | select(.message != null) | .message" --base "$DEFAULT_BRANCH")
-          echo "CHANGES=$CHANGES" >> $GITHUB_ENV
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: ${{env.VERSION}}
           release_name: Release ${{env.VERSION}}
-          body: |
-            Release of version ${{env.VERSION}}
-
-            ### Changelog
-            ${{ env.CHANGES }}
+          body: Release of version ${{env.VERSION}}
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
 
       - name: Upload Linux AppImage
         uses: actions/upload-release-asset@v1
