@@ -7,7 +7,7 @@ Name "${APP_NAME} Setup"
 Caption "${APP_NAME} Setup"
 
 ; The directory where your application files are located
-!define SOURCE_DIR "D:\a\NFOBuilder\NFOBuilder\release"
+!define SOURCE_DIR "D:\a\NFOBuilder\NFOBuilder\bin"
 
 ; Name of the executable
 !define EXECUTABLE "NFO-Creator.exe"
