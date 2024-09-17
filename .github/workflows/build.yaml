@@ -46,6 +46,10 @@ jobs:
           dos2unix resources/*.desktop 
           mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
+          echo appdir
+          ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir
+          echo appdir/opt
+          ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
           ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       - name: Rename AppImage
