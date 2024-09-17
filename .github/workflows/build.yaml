@@ -75,6 +75,7 @@ jobs:
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop 
+          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       #
