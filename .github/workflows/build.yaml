@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+          sudo apt-get install -y dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
       - name: Compile
         run: |
@@ -43,11 +43,34 @@ jobs:
           pwd
           ls -l | grep NFO-Creator
           make INSTALL_ROOT=appdir install
+
+          # Ensure appdir exists
+          if [ ! -d "appdir" ]; then
+            echo "Error: appdir directory does not exist."
+            exit 1
+          fi
+
+          # Download and set up linuxdeployqt
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
-          dos2unix resources/*.desktop 
-          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+
+          # Ensure resources directory and files exist
+          if [ ! -d "resources" ]; then
+            echo "Error: resources directory does not exist."
+            exit 1
+          fi
+          if [ ! -f "resources/plex-nfo.png" ]; then
+            echo "Error: plex-nfo.png does not exist."
+            exit 1
+          fi
+          if [ ! -f "resources/*.desktop" ]; then
+            echo "Error: *.desktop files do not exist."
+            exit 1
+          fi
+
+          dos2unix resources/*.desktop
+          cp resources/plex-nfo.png appdir/opt/default.png
+          ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
