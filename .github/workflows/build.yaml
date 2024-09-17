@@ -211,16 +211,8 @@ jobs:
         run: |
           mkdir -p deploy\windows\nsis\
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
-          cd deploy\windows\nsis
-          echo current dir
-          dir
-          echo nfobuilder
-          dir NFOBuilder
-          echo nfobuilder/bin
-          dir NFOBuilder/bin
-          echo up one dir
           dir ..
-          makensis /X"SetCompressor /FINAL lzma" ..\resources\setup.nsi
+          makensis /X"SetCompressor /FINAL lzma" NFOBuilder\resources\setup.nsi
           ren *.exe ${{env.EXECUTABLE}}-${{env.VERSION}}-Windows.exe
 
       #
