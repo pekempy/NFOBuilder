@@ -40,6 +40,8 @@ jobs:
 
       - name: Create AppImage
         run: |
+          pwd
+          ls -l | grep NFO-Creator
           make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
@@ -177,17 +179,20 @@ jobs:
           name: ${{env.EXECUTABLE}}-windows.exe
           path: ${{env.EXECUTABLE}}-windows.exe
 
+      - name: List files
+        run: ls -la ${{ github.workspace }}
+
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1.14.0
         with:
-          tag_name: ${{env.VERSION}}
-          release_name: Release ${{env.VERSION}}
-          body: Release of version ${{env.VERSION}}
+          tag: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: Release of version ${{ env.VERSION }}
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Linux AppImage
         uses: actions/upload-release-asset@v1
