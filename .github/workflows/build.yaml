@@ -38,30 +38,20 @@ jobs:
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
           make -j8
 
+      #
+      # Create the AppImage
+      # -qmldir="${{env.QML_DIR_NIX}}" from line 75
       - name: Create AppImage
         run: |
+          pwd
+          ls -l | grep NFO-Creator
           make INSTALL_ROOT=appdir install
-          chmod -R 755 /home/runner/work/NFOBuilder/NFOBuilder/appdir
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
-          dos2unix resources/*.desktop
+          dos2unix resources/*.desktop 
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-          ./linuxdeployqt resources/*.desktop -appimage -unsupported-allow-new-glibc -bundle-non-qt-libs -appdir=/home/runner/work/NFOBuilder/NFOBuilder/appdir/opt -verbose=3
-          chmod +x resources/appimagetool-x86_64.AppImage
-          ./resources/appimagetool-x86_64.AppImage release
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
           ls -l
-
-      # - name: Create AppImage
-      #   run: |
-      #     make INSTALL_ROOT=appdir install
-      #     wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-      #     chmod a+x linuxdeployqt
-      #     dos2unix resources/*.desktop
-      #     mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-      #     cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-      #     echo appdir/opt contents:
-      #     ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-      #     ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -verbose
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
