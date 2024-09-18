@@ -29,7 +29,7 @@ jobs:
           modules: "qtwebengine"
       
       - name: Install Linuxdeployqt
-          uses: miurahr/install-linuxdeployqt-action@v1.0.1
+        uses: miurahr/install-linuxdeployqt-action@v1.0.1
 
       - name: Install dependencies
         run: |
