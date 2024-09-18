@@ -38,13 +38,15 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+          sudo apt-get install libssl-dev dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
       #
       # Compile the application
       #
       - name: Compile
         run: |
+          export OPENSSL_ROOT_DIR=/usr/lib/ssl
+          export LD_LIBRARY_PATH=/usr/lib/ssl:$LD_LIBRARY_PATH
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
           make -j8
 
@@ -141,16 +143,25 @@ jobs:
           scoop bucket add extras
           scoop install nsis
 
+      - name: Install OpenSSL
+        run: |
+          scoop install openssl
+
+      - name: Set OpenSSL path
+        run: |
+          set OPENSSL_ROOT_DIR=C:\Users\runner\scoop\apps\openssl\current
+          set PATH=%OPENSSL_ROOT_DIR%\bin;%PATH%
+
       - name: Compile
         run: |
-          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release OPENSSL_LIBS="-L%C:\Users\runner\scoop\apps\openssl\current\lib -lssl -lcrypto"
           nmake
 
       - name: Deploy
         run: |
           mkdir bin
           move release/${{env.EXECUTABLE}}.exe bin
-          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime 
+          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime --openssl=C:\Users\runner\scoop\apps\openssl\current
           mkdir "${{env.APPLICATION}}"
           move bin "${{env.APPLICATION}}"
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
