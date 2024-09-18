@@ -220,6 +220,8 @@ jobs:
           asset_path: release/${{env.EXECUTABLE}}-linux.AppImage
           asset_name: ${{env.EXECUTABLE}}-linux.AppImage
           asset_content_type: application/x-appimage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload macOS ZIP
         uses: actions/upload-release-asset@v1
@@ -228,6 +230,8 @@ jobs:
           asset_path: release/${{env.EXECUTABLE}}-macOS.zip
           asset_name: ${{env.EXECUTABLE}}-macOS.zip
           asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload Windows Installer
         uses: actions/upload-release-asset@v1
@@ -236,3 +240,5 @@ jobs:
           asset_path: release/${{env.EXECUTABLE}}-windows.exe
           asset_name: ${{env.EXECUTABLE}}-windows.exe
           asset_content_type: application/x-msi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
