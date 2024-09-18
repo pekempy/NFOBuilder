@@ -40,7 +40,6 @@ jobs:
 
       - name: Create AppImage
         run: |
-          ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/NFO-Creator/bin/NFO-Creator
           make INSTALL_ROOT=appdir install
           chmod -R 755 /home/runner/work/NFOBuilder/NFOBuilder/appdir
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
