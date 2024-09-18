@@ -50,7 +50,7 @@ jobs:
           echo appdir/opt contents:
           ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
           chmod -R a+rw /home/runner/work/NFOBuilder/NFOBuilder/appdir
-          ./linuxdeployqt /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/NFOBuilder.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+          ./linuxdeployqt resources/NFOBuilder.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
