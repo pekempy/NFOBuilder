@@ -45,8 +45,8 @@ jobs:
       - name: Create AppImage
         run: |
           make INSTALL_ROOT=appdir install
-          pwd
-          ls -l appdir
+          echo appdir/opt
+          ls -l appdir/opt
           chmod a+x resources/linuxdeployqt-continuous-x86_64.AppImage
           chmod a+x resources/appimagetool-x86_64.AppImage
           dos2unix resources/*.desktop 
