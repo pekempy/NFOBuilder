@@ -41,19 +41,17 @@ jobs:
       #
       # Create the AppImage
       # -qmldir="${{env.QML_DIR_NIX}}" from line 75
+      # pwd =  /home/runner/work/NFOBuilder/NFOBuilder
       - name: Create AppImage
         run: |
-          # make INSTALL_ROOT=appdir install
-          pwd
-          ls -l
-          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-          chmod a+x linuxdeployqt
+          make INSTALL_ROOT=appdir install
+          chmod a+x resources/linuxdeployqt-continuous-x86_64.AppImage
+          chmod a+x resources/appimagetool-x86_64.AppImage
           dos2unix resources/*.desktop 
-          mkdir -p appdir/opt
-          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-          ./linuxdeployqt resources/*.desktop -appimage
-          pwd
+          resources/linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/NFOBuilder/NFOBuilder/release/NFOBuilder -appimage -unsupported-allow-new-glibc
+          resources/appimagetool-x86_64.AppImage /home/runner/work/NFOBuilder/NFOBuilder/release
           ls -l
+          # cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
