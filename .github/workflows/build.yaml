@@ -1,8 +1,8 @@
 name: Build
 on:
   push:
-    # tags:
-    #   - "v*.*.*"
+    tags:
+      - "v*.*.*"
 
 env:
   EXECUTABLE: "NFO-Creator"
@@ -15,24 +15,34 @@ jobs:
   build-linux:
     runs-on: ubuntu-20.04
     steps:
+      #
+      # Checkout the repository
+      #
       - name: Checkout repository and submodules
         uses: actions/checkout@v4.1.7
         with:
           submodules: recursive
 
-      - name: Set VERSION environment variable
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
+      #
+      # Install Qt
+      #
       - name: Install Qt
         uses: jurplel/install-qt-action@v4.0.0
         with:
           modules: "qtwebengine"
 
+      #
+      # Install additional dependencies, stolen from:
+      # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
+      #
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
+      #
+      # Compile the application
+      #
       - name: Compile
         run: |
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
@@ -51,11 +61,16 @@ jobs:
           dos2unix resources/*.desktop 
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
-          ls -l
 
+      #
+      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
+      #
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
 
+      #
+      # Upload AppImage to build artifacts
+      #
       - name: Upload AppImage
         uses: actions/upload-artifact@v4.4.0
         with:
