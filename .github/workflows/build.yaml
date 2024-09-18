@@ -47,11 +47,11 @@ jobs:
           # wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           # chmod a+x linuxdeployqt
           # ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+          make INSTALL_ROOT=appdir install
           echo "appdir/usr/share/applications"
           ls -l appdir/usr/share/applications
           echo pwd
           ls -l
-          make INSTALL_ROOT=appdir install
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop 
