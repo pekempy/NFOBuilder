@@ -45,8 +45,8 @@ jobs:
       - name: Create AppImage
         run: |
           make INSTALL_ROOT=appdir install
-          echo appdir/opt/NFO-Creator
-          ls -l appdir/opt/NFO-Creator
+          echo appdir/opt/NFO-Creator/bin
+          ls -l appdir/opt/NFO-Creator/bin
           chmod a+x resources/linuxdeployqt-continuous-x86_64.AppImage
           chmod a+x resources/appimagetool-x86_64.AppImage
           dos2unix resources/*.desktop 
