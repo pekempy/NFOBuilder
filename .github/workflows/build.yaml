@@ -44,7 +44,7 @@ jobs:
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop
-          linuxdeployqt-continuous-x86_64.AppImage resources/*.desktop -appimage -unsupported-allow-new-glibc -bundle-non-qt-libs
+          ./linuxdeployqt resources/*.desktop -appimage -unsupported-allow-new-glibc -bundle-non-qt-libs
           chmod +x resources/appimagetool-x86_64.AppImage
           ./resources/appimagetool-x86_64.AppImage release
           ls -l
