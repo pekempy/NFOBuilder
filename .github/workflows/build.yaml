@@ -137,14 +137,11 @@ jobs:
         with:
           modules: "qtwebengine"
 
-      - name: Install NSIS
+      - name: Install NSIS & OpenSSL
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop bucket add extras
           scoop install nsis
-
-      - name: Install OpenSSL
-        run: |
           scoop install openssl
 
       - name: Set OpenSSL path
