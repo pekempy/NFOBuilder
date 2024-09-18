@@ -146,8 +146,8 @@ jobs:
 
       - name: Set OpenSSL path
         run: |
-          set OPENSSL_ROOT_DIR=C:\Users\runner\scoop\apps\openssl\current
-          set PATH=%OPENSSL_ROOT_DIR%\bin;%PATH%
+          $env:OPENSSL_ROOT_DIR="C:\Users\runner\scoop\apps\openssl\current"
+          $env:PATH="$env:OPENSSL_ROOT_DIR\bin;$env:PATH"
 
       - name: Compile
         run: |
