@@ -44,12 +44,6 @@ jobs:
       - name: Create AppImage
         run: |
           # make INSTALL_ROOT=appdir install
-          # wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-          # chmod a+x linuxdeployqt
-          # ./linuxdeployqt appdir/usr/share/applications/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
-          make INSTALL_ROOT=appdir install
-          echo "appdir/usr/share/applications"
-          ls -l appdir/usr/share/applications
           echo pwd
           ls -l
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
@@ -57,6 +51,8 @@ jobs:
           dos2unix resources/*.desktop 
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           ./linuxdeployqt resources/*.desktop -appimage
+          echo pwd
+          ls -l
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
