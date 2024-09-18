@@ -27,6 +27,9 @@ jobs:
         uses: jurplel/install-qt-action@v4.0.0
         with:
           modules: "qtwebengine"
+      
+      - name: Install Linuxdeployqt
+          uses: miurahr/install-linuxdeployqt-action@v1.0.1
 
       - name: Install dependencies
         run: |
@@ -39,16 +42,25 @@ jobs:
           make -j8
 
       - name: Create AppImage
-        run: |
-          make INSTALL_ROOT=appdir install
-          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
-          chmod a+x linuxdeployqt
-          dos2unix resources/*.desktop 
-          mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-          echo appdir/opt contents:
-          ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -verbose
+          run: |
+            make INSTALL_ROOT=appdir install
+            dos2unix resources/*.desktop
+            linuxdeployqt-continuous-x86_64.AppImage resources/*.desktop -appimage -unsupported-allow-new-glibc -bundle-non-qt-libs
+            chmod +x resources/appimagetool-x86_64.AppImage
+            ./resources/appimagetool-x86_64.AppImage release
+            ls -l
+            
+      # - name: Create AppImage
+      #   run: |
+      #     make INSTALL_ROOT=appdir install
+      #     wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+      #     chmod a+x linuxdeployqt
+      #     dos2unix resources/*.desktop 
+      #     mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
+      #     cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
+      #     echo appdir/opt contents:
+      #     ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
+      #     ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -verbose
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
