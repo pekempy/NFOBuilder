@@ -201,15 +201,6 @@ jobs:
       - name: List files
         run: ls -la ${{ github.workspace }}
 
-      - name: List files linux
-        run: ls -la ${{ github.workspace }}/NFO-Creator-linux.AppImage
-
-      - name: List files windows
-        run: ls -la ${{ github.workspace }}/NFO-Creator-windows.exe
-
-      - name: List files linux
-        run: ls -la ${{ github.workspace }}/NFO-Creator-macOS.zip
-
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1.14.0
@@ -226,7 +217,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-linux.AppImage
+          asset_path: ${{env.EXECUTABLE}}-linux.AppImage/${{env.EXECUTABLE}}-linux.AppImage
           asset_name: ${{env.EXECUTABLE}}-linux.AppImage
           asset_content_type: application/x-appimage
 
@@ -234,7 +225,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-macOS.zip
+          asset_path: ${{env.EXECUTABLE}}-macOS.zip/${{env.EXECUTABLE}}-macOS.zip
           asset_name: ${{env.EXECUTABLE}}-macOS.zip
           asset_content_type: application/zip
 
@@ -242,6 +233,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-windows.exe
+          asset_path: ${{env.EXECUTABLE}}-windows.exe/${{env.EXECUTABLE}}-windows.exe
           asset_name: ${{env.EXECUTABLE}}-windows.exe
           asset_content_type: application/x-msi
