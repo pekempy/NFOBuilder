@@ -44,14 +44,15 @@ jobs:
       - name: Create AppImage
         run: |
           # make INSTALL_ROOT=appdir install
-          echo pwd
+          pwd
           ls -l
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop 
+          mkdir -p appdir/opt
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           ./linuxdeployqt resources/*.desktop -appimage
-          echo pwd
+          pwd
           ls -l
 
       - name: Rename AppImage
