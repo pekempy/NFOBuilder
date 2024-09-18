@@ -48,7 +48,7 @@ jobs:
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           echo appdir/opt contents:
           ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -unsupported-allow-new-glibc -extra-plugins=imageformats/libqsvg.so
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
