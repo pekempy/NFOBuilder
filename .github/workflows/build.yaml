@@ -184,19 +184,19 @@ jobs:
         uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-linux.AppImage
-          path: ${{env.EXECUTABLE}}-linux.AppImage
+          path: release
 
       - name: Download macOS ZIP
         uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-macOS.zip
-          path: ${{env.EXECUTABLE}}-macOS.zip
+          path: release
 
       - name: Download Windows Installer
         uses: actions/download-artifact@v4.1.8
         with:
           name: ${{env.EXECUTABLE}}-windows.exe
-          path: ${{env.EXECUTABLE}}-windows.exe
+          path: release
 
       - name: List files
         run: ls -la ${{ github.workspace }}
@@ -217,7 +217,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-linux.AppImage/${{env.EXECUTABLE}}-linux.AppImage
+          asset_path: release/${{env.EXECUTABLE}}-linux.AppImage
           asset_name: ${{env.EXECUTABLE}}-linux.AppImage
           asset_content_type: application/x-appimage
 
@@ -225,7 +225,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-macOS.zip/${{env.EXECUTABLE}}-macOS.zip
+          asset_path: release/${{env.EXECUTABLE}}-macOS.zip
           asset_name: ${{env.EXECUTABLE}}-macOS.zip
           asset_content_type: application/zip
 
@@ -233,6 +233,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.EXECUTABLE}}-windows.exe/${{env.EXECUTABLE}}-windows.exe
+          asset_path: release/${{env.EXECUTABLE}}-windows.exe
           asset_name: ${{env.EXECUTABLE}}-windows.exe
           asset_content_type: application/x-msi
