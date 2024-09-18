@@ -50,11 +50,7 @@ jobs:
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop 
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
-          ls -l
-          df -h
-          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
-          ls -l
-          df -h
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
