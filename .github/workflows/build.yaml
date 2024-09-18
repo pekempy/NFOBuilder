@@ -45,12 +45,10 @@ jobs:
           chmod a+x linuxdeployqt
           dos2unix resources/*.desktop 
           mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-          mkdir -p /home/runner/work/NFOBuilder/NFOBuilder/output
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           echo appdir/opt contents:
           ls -l /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt
-          chmod -R a+rw /home/runner/work/NFOBuilder/NFOBuilder/appdir
-          ./linuxdeployqt resources/NFOBuilder.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -unsupported-allow-new-glibc -extra-plugins=imageformats/libqsvg.so
 
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
