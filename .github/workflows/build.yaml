@@ -198,16 +198,21 @@ jobs:
           name: ${{env.EXECUTABLE}}-windows.exe
           path: release
 
-      - name: List files
-        run: ls -la ${{ github.workspace }}
-
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1.14.0
         with:
           tag: ${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
-          body: Release of version ${{ env.VERSION }}
+          body: |
+            ## Installation
+            Please see Wiki pages for installation guides:    
+            [🪟 Windows](https://github.com/pekempy/NFOBuilder/wiki/Setup---Windows)    
+            [🐧 Linux](https://github.com/pekempy/NFOBuilder/wiki/Setup---Linux)    
+            [🍎 macOS](https://github.com/pekempy/NFOBuilder/wiki/Setup-MacOS)
+
+            ## Changelog
+            ⏫ ${{ env.VERSION }}
           draft: false
           prerelease: false
         env:
