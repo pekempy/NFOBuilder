@@ -217,7 +217,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-linux.AppImage
+          asset_path: ${{env.EXECUTABLE}}-linux.AppImage
           asset_name: ${{env.EXECUTABLE}}-linux.AppImage
           asset_content_type: application/x-appimage
 
@@ -225,7 +225,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-macOS.zip
+          asset_path: ${{env.EXECUTABLE}}-macOS.zip
           asset_name: ${{env.EXECUTABLE}}-macOS.zip
           asset_content_type: application/zip
 
@@ -233,6 +233,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/${{env.EXECUTABLE}}-windows.exe
+          asset_path: ${{env.EXECUTABLE}}-windows.exe
           asset_name: ${{env.EXECUTABLE}}-windows.exe
           asset_content_type: application/x-msi
