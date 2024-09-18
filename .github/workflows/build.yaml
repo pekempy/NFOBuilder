@@ -31,7 +31,7 @@ jobs:
         with:
           version: "6.4.0"
           install-deps: "true"
-          modules: "qtwebengine qtnetwork"
+          modules: "qtwebengine"
 
       #
       # Install additional dependencies, stolen from:
@@ -97,7 +97,7 @@ jobs:
         with:
           version: "6.4.0"
           install-deps: "true"
-          modules: "qtwebengine qtnetwork"
+          modules: "qtwebengine"
 
       - name: Compile
         run: |
@@ -141,7 +141,7 @@ jobs:
         with:
           version: "6.4.0"
           install-deps: "true"
-          modules: "qtwebengine qtnetwork"
+          modules: "qtwebengine"
 
       - name: Install NSIS & OpenSSL
         run: |
