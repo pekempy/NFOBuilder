@@ -28,9 +28,6 @@ jobs:
         with:
           modules: "qtwebengine"
 
-      - name: Install Linuxdeployqt
-        uses: miurahr/install-linuxdeployqt-action@v1.0.1
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -44,6 +41,8 @@ jobs:
       - name: Create AppImage
         run: |
           make INSTALL_ROOT=appdir install
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+          chmod a+x linuxdeployqt
           dos2unix resources/*.desktop
           linuxdeployqt-continuous-x86_64.AppImage resources/*.desktop -appimage -unsupported-allow-new-glibc -bundle-non-qt-libs
           chmod +x resources/appimagetool-x86_64.AppImage
