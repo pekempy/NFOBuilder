@@ -119,31 +119,31 @@ void MainWindow::on_actionLoad_NFO_triggered()
     while(!xml.atEnd() && !xml.hasError()) {
         xml.readNext();
         if(xml.isStartElement()) {
-            if(xml.name() == "title") {
+            if(xml.name() == QStringLiteral("title")) {
                 showName = xml.readElementText().toStdString();
                 ui->showNameInput->setText(QString::fromStdString(showName));
             }
-            if(xml.name() == "thumb") {
+            if(xml.name() == QStringLiteral("thumb")) {
                 showPoster = xml.readElementText().toStdString();
                 ui->showPosterInput->setText(QString::fromStdString(showPoster));
             }
-            if(xml.name() == "premiered") {
+            if(xml.name() == QStringLiteral("premiered")) {
                 showDate = xml.readElementText().toStdString();
                 ui->showDateInput->setText(QString::fromStdString(showDate));
             }
-            if(xml.name() == "director") {
+            if(xml.name() == QStringLiteral("director")) {
                 showDirector = xml.readElementText().toStdString();
                 ui->showMasterInput->setText(QString::fromStdString(showDirector));
             }
-            if(xml.name() == "studio") {
+            if(xml.name() == QStringLiteral("studio")) {
                 showLocation = xml.readElementText().toStdString();
                 ui->showLocationInput->setText(QString::fromStdString(showLocation));
             }
-            if(xml.name() == "plot") {
+            if(xml.name() == QStringLiteral("plot")) {
                 showPlot = xml.readElementText().toStdString();
                 ui->showSynopsisInput->setText(QString::fromStdString(showPlot));
             }
-            if(xml.name() == "genre") {
+            if(xml.name() == QStringLiteral("genre")) {
                 QString genreText = xml.readElementText();
                 if (genreText == "Ballet") {
                     ui->checkbox_ballet->setChecked(true);
@@ -157,14 +157,14 @@ void MainWindow::on_actionLoad_NFO_triggered()
                     ui->checkbox_proshot->setChecked(true);
                 }
             }
-            if(xml.name() == "certification") {
+            if(xml.name() == QStringLiteral("certification")) {
                 QString certificationText = xml.readElementText();
                 if (certificationText.contains("NFT")) {
                     ui->isNFTCheckbox->setChecked(true);
                     ui->isNFTCheckbox->setDisabled(true);
                 }
             }
-            if(xml.name() == "actor") {
+            if(xml.name() == QStringLiteral("actor")) {
                 string actorName = "";
                 string characterName = "";
                 string headshot = "";
