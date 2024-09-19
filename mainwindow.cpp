@@ -112,7 +112,7 @@ string buildXML(){
                         "   <title>" + showName + "</title>\n"
                         "   <originaltitle>" + showName + "</originaltitle>\n"
                         "   <sorttitle>" + showName + "</sorttitle>\n"
-                        "   <thumb>" + showPoster + "</thumb>\n"
+                        "   <thumb aspect=\"poster\">" + showPoster + "</thumb>\n"
                         "   <premiered>" + showDate + "</premiered>\n"
                         "   <releasedate>" + showDate + "</releasedate>\n"
                         "   <director>" + showDirector + "</director>\n"
