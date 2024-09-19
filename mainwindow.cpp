@@ -20,6 +20,8 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QXmlStreamReader>
+#include <QStyledItemDelegate>
+#include <QPainter>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -59,6 +61,27 @@ FileDownloader * file;
 //settings file set org/app name
 QSettings mySettings("Pekempy","NFO Builder");
 
+class CustomDelegate : public QStyledItemDelegate {
+public:
+    CustomDelegate(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
+
+    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override {
+        QStyledItemDelegate::paint(painter, option, index);
+
+        if (index.column() == 2) {
+            QString nameValue = index.model()->data(index.siblingAtColumn(0)).toString();
+            QString headshotValue = index.data().toString();
+
+            if (!nameValue.isEmpty() && headshotValue.isEmpty()) {
+                painter->save();
+                painter->setPen(QPen(Qt::red, 1));
+                painter->drawRect(option.rect.adjusted(0, 0, -1, -1));
+                painter->restore();
+            }
+        }
+    }
+};
+
 // Set up the MainWindow UI
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -82,6 +105,8 @@ MainWindow::MainWindow(QWidget *parent)
         ui->encoraAPIKeyLabel->show();
     }
     ui->outputFolderInput->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/");
+    // set the delegate
+    ui->castTable->setItemDelegate(new CustomDelegate(ui->castTable));
 }
 
 // On close, delete the UI
@@ -477,6 +502,7 @@ void MainWindow::clearAllValues(){
     ui->castTable->scrollToTop();
 }
 
+
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
     string test;
@@ -495,9 +521,6 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
                 cellLink->setText(QString::fromStdString(url));
             }
         }
-    }
-
-    if(column == 0) {
         QString headshotsFilePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + headshotsFileName;
         QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
 
@@ -514,6 +537,7 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
             headshotCell->setText(QString::fromStdString(""));
         }
     }
+
     if(column == 2) {
         QString headshotsFilePath = QStandardPaths::writableLocation((QStandardPaths::AppDataLocation)) + "/" + headshotsFileName;
         QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
@@ -557,6 +581,7 @@ void MainWindow::on_castTable_cellChanged(int row, int column)
             }
         }
     }
+    ui->castTable->viewport()->update();
 }
 
 // Genre Checkbox functions
@@ -744,5 +769,3 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
         QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
 }
-
-
