@@ -152,7 +152,7 @@ jobs:
 
       - name: Compile
         run: |
-          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release"
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
           nmake
 
       - name: Deploy
