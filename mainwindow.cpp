@@ -285,6 +285,7 @@ void MainWindow::on_showNameInput_textChanged(const QString &arg1)
 void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
 {
     showPoster = arg1.toStdString();
+    ui->showPosterInput->setStyleSheet("");
 }
 
 
@@ -312,6 +313,7 @@ void MainWindow::on_showMasterInput_textChanged(const QString &arg1)
 void MainWindow::on_showSynopsisInput_textChanged()
 {
     showPlot = ui->showSynopsisInput->toPlainText().toStdString();
+    ui->showSynopsisInput->setStyleSheet("");
 }
 
 void MainWindow::on_outputFolderInput_textChanged(const QString &arg1)
@@ -478,12 +480,18 @@ void MainWindow::modifyGenre(const std::string& genre, bool checked) {
 void MainWindow::on_checkbox_musical_toggled(bool checked)
 {
     string genre = "   <genre>Musical</genre>\n";
+    ui->checkbox_musical->setStyleSheet("");
+    ui->checkbox_play->setStyleSheet("");
+    ui->checkbox_ballet->setStyleSheet("");
     modifyGenre(genre, checked);
 }
 
 void MainWindow::on_checkbox_play_toggled(bool checked)
 {
     string genre = "   <genre>Play</genre>\n";
+    ui->checkbox_musical->setStyleSheet("");
+    ui->checkbox_play->setStyleSheet("");
+    ui->checkbox_ballet->setStyleSheet("");
     modifyGenre(genre, checked);
 }
 
@@ -599,6 +607,13 @@ void MainWindow::on_encoraLookupButton_clicked()
         QString googleSearchUrl = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + performerName;
         ui->castTable->item(i, 3)->setText(googleSearchUrl);
     }
+
+    // highlight fields which need looking at red
+    ui->showPosterInput->setStyleSheet("border: 1px solid red");
+    ui->checkbox_musical->setStyleSheet("border: 1px solid red");
+    ui->checkbox_play->setStyleSheet("border: 1px solid red");
+    ui->checkbox_ballet->setStyleSheet("border: 1px solid red");
+    ui->showSynopsisInput->setStyleSheet("border: 1px solid red");
 
     // Extract recording type and update checkboxes
     QJsonObject metadata = obj["metadata"].toObject();
