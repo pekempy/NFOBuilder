@@ -3,11 +3,13 @@
 #include <vector>
 #include <iterator>
 #include <fstream>
+#include <QAction>
 #include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QDebug>
+#include <QFileDialog>
 #include <QList>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
@@ -17,6 +19,7 @@
 #include <QJsonArray>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QXmlStreamReader>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -85,6 +88,111 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_actionReset_API_Key_triggered()
+{
+    // Reset API key logic
+    ui->encoraAPIKey->setText("");
+    QSettings mySettings;
+    mySettings.remove("encora-apikey");
+
+    ui->encoraAPIKey->show();
+    ui->encoraAPIKeyLabel->show();
+
+    if(encoraID.length() > 0 && encoraAPIKey.length() > 0) {
+        ui->encoraLookupButton->setEnabled(true);
+    } else {
+        ui->encoraLookupButton->setEnabled(false);
+    }
+}
+
+void MainWindow::on_actionLoad_NFO_triggered()
+{
+    // load NFO logic
+    // open file choose dialog
+    QString fileName = QFileDialog::getOpenFileName(this, "Open NFO File", "", "NFO Files (*.nfo)");
+    // with the file, extract data from the NFO XML and populate the UI
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QXmlStreamReader xml(&file);
+    while(!xml.atEnd() && !xml.hasError()) {
+        xml.readNext();
+        if(xml.isStartElement()) {
+            if(xml.name() == "title") {
+                showName = xml.readElementText().toStdString();
+                ui->showNameInput->setText(QString::fromStdString(showName));
+            }
+            if(xml.name() == "thumb") {
+                showPoster = xml.readElementText().toStdString();
+                ui->showPosterInput->setText(QString::fromStdString(showPoster));
+            }
+            if(xml.name() == "premiered") {
+                showDate = xml.readElementText().toStdString();
+                ui->showDateInput->setText(QString::fromStdString(showDate));
+            }
+            if(xml.name() == "director") {
+                showDirector = xml.readElementText().toStdString();
+                ui->showMasterInput->setText(QString::fromStdString(showDirector));
+            }
+            if(xml.name() == "studio") {
+                showLocation = xml.readElementText().toStdString();
+                ui->showLocationInput->setText(QString::fromStdString(showLocation));
+            }
+            if(xml.name() == "plot") {
+                showPlot = xml.readElementText().toStdString();
+                ui->showSynopsisInput->setText(QString::fromStdString(showPlot));
+            }
+            if(xml.name() == "genre") {
+                QString genreText = xml.readElementText();
+                if (genreText == "Ballet") {
+                    ui->checkbox_ballet->setChecked(true);
+                } else if (genreText == "Bootleg") {
+                    ui->checkbox_bootleg->setChecked(true);
+                } else if (genreText == "Musical") {
+                    ui->checkbox_musical->setChecked(true);
+                } else if (genreText == "Play") {
+                    ui->checkbox_play->setChecked(true);
+                } else if (genreText == "Pro-Shot") {
+                    ui->checkbox_proshot->setChecked(true);
+                }
+            }
+            if(xml.name() == "certification") {
+                QString certificationText = xml.readElementText();
+                if (certificationText.contains("NFT")) {
+                    ui->isNFTCheckbox->setChecked(true);
+                    ui->isNFTCheckbox->setDisabled(true);
+                }
+            }
+            if(xml.name() == "actor") {
+                string actorName = "";
+                string characterName = "";
+                string headshot = "";
+                while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "actor")) {
+                    if(xml.isStartElement()) {
+                        if(xml.name() == "name") {
+                            actorName = xml.readElementText().toStdString();
+                        }
+                        if(xml.name() == "role") {
+                            characterName = xml.readElementText().toStdString();
+                        }
+                        if(xml.name() == "thumb") {
+                            headshot = xml.readElementText().toStdString();
+                        }
+                    }
+                    xml.readNext();
+                }
+                for(int i = 0; i < ui->castTable->rowCount(); ++i) {
+                    if(ui->castTable->item(i, 0)->text().isEmpty()) {
+                        ui->castTable->item(i, 0)->setText(QString::fromStdString(actorName));
+                        ui->castTable->item(i, 1)->setText(QString::fromStdString(characterName));
+                        ui->castTable->item(i, 2)->setText(QString::fromStdString(headshot));
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Query Encora API for the recording data
@@ -288,7 +396,6 @@ void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
     ui->showPosterInput->setStyleSheet("");
 }
 
-
 void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 {
     std::string arg1Str = arg1.toStdString(); // Convert once
@@ -330,7 +437,6 @@ void MainWindow::on_outputFolderInput_editingFinished()
     }
 }
 
-
 void MainWindow::clearAllValues(){
 
     //clear global strings
@@ -370,7 +476,6 @@ void MainWindow::clearAllValues(){
     }
     ui->castTable->scrollToTop();
 }
-
 
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
@@ -639,4 +744,5 @@ void MainWindow::on_castTable_cellClicked(int row, int column)
         QDesktopServices::openUrl(QUrl(QString::fromStdString(urlToOpen)));
     }
 }
+
 

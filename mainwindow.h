@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QObject>
 #include <QMainWindow>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -50,6 +51,11 @@ private slots:
     // cast table functions
     void on_castTable_cellClicked(int row, int column);
     void on_castTable_cellChanged(int row, int column);
+
+    void on_actionReset_API_Key_triggered();
+
+
+    void on_actionLoad_NFO_triggered();
 
 private:
     Ui::MainWindow *ui;
