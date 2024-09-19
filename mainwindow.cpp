@@ -109,7 +109,7 @@ void MainWindow::on_actionReset_API_Key_triggered()
 
 void MainWindow::on_actionLoad_NFO_triggered()
 {
-    // load NFO logic
+    clearAllValues();
     // open file choose dialog
     QString fileName = QFileDialog::getOpenFileName(this, "Open NFO File", "", "NFO Files (*.nfo)");
     // with the file, extract data from the NFO XML and populate the UI
