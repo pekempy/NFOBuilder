@@ -40,15 +40,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libssl-dev dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+          sudo apt-get install libssl1.1 libssl-dev dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
       #
       # Compile the application
       #
       - name: Compile
         run: |
-          export OPENSSL_ROOT_DIR=/usr/lib/ssl
-          export LD_LIBRARY_PATH=/usr/lib/ssl:$LD_LIBRARY_PATH
+          export OPENSSL_ROOT_DIR=/usr
+          export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
+          export LD_LIBRARY_PATH=/usr/local/lib
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
           make -j8
 
