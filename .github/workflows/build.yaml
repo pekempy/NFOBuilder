@@ -157,21 +157,18 @@ jobs:
 
       - name: Deploy
         run: |
-          mkdir bin
           move release/${{env.EXECUTABLE}}.exe bin
           windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime
           mkdir "${{env.APPLICATION}}"
-          echo pwd/bin
-          dir bin
           move bin "${{env.APPLICATION}}"
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
-          pwd
-          dir
 
       - name: Make NSIS installer
         run: |
           mkdir -p deploy\windows\nsis\ 
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
+          pwd
+          dir deploy\windows\nsis
           makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
           move D:\a\NFOBuilder\NFOBuilder\NFOBuilder-windows.exe ${{env.EXECUTABLE}}-windows.exe
 
