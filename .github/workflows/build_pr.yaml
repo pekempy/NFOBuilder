@@ -13,7 +13,7 @@ env:
   QML_DIR_WIN: "assets\\qml"
 
 jobs:
-  build-linux:
+  build_linux:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository and submodules
@@ -60,7 +60,7 @@ jobs:
           name: ${{ env.EXECUTABLE }}-linux.AppImage
           path: ${{ env.EXECUTABLE }}-linux.AppImage
 
-  build-mac:
+  build_mac:
     runs-on: macos-latest
     steps:
       - name: Checkout repository and submodules
@@ -98,7 +98,7 @@ jobs:
           name: ${{ env.EXECUTABLE }}-macOS.zip
           path: ${{ env.EXECUTABLE }}-macOS.zip
 
-  build-windows:
+  build_windows:
     runs-on: windows-latest
     steps:
       - name: Checkout repository and submodules
