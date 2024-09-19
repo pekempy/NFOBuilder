@@ -1,4 +1,4 @@
-name: Build on Pull Request
+name: Pull Request Build & Comment
 
 on:
   pull_request:
@@ -12,3 +12,226 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+env:
+  EXECUTABLE: "NFO-Creator"
+  APPLICATION: "NFOBuilder"
+  QMAKE_PROJECT: "NFO-Creator.pro"
+  QML_DIR_NIX: "assets/qml"
+  QML_DIR_WIN: "assets\\qml"
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-20.04
+    steps:
+      #
+      # Checkout the repository
+      #
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      #
+      # Install Qt
+      #
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          version: "6.4.0"
+          install-deps: "true"
+          modules: "qtwebengine qtpositioning qtwebchannel"
+
+      #
+      # Install additional dependencies, stolen from:
+      # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
+      #
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libssl-dev dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
+
+      #
+      # Compile the application
+      #
+      - name: Compile
+        run: |
+          export OPENSSL_ROOT_DIR=/usr/lib/ssl
+          export LD_LIBRARY_PATH=/usr/lib/ssl:$LD_LIBRARY_PATH
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
+          make -j8
+
+      #
+      # Create the AppImage
+      # -qmldir="${{env.QML_DIR_NIX}}" from line 75
+      - name: Create AppImage
+        run: |
+          pwd
+          ls -l | grep NFO-Creator
+          make INSTALL_ROOT=appdir install
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" -O linuxdeployqt
+          chmod a+x linuxdeployqt
+          dos2unix resources/*.desktop 
+          cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
+          ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
+
+      #
+      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
+      #
+      - name: Rename AppImage
+        run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
+
+      #
+      # Upload AppImage to build artifacts
+      #
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-linux.AppImage
+          path: ${{env.EXECUTABLE}}-linux.AppImage
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          version: "6.4.0"
+          install-deps: "true"
+          modules: "qtwebengine qtpositioning qtwebchannel"
+
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release
+          make -j8
+
+      - name: Deploy app
+        run: |
+          macdeployqt ${{env.EXECUTABLE}}.app
+          mv "${{env.EXECUTABLE}}.app" "${{env.APPLICATION}}.app"
+
+      - name: Create ZIP file
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent "${{env.APPLICATION}}.app" ${{env.EXECUTABLE}}-macOS.zip
+
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-macOS.zip
+          path: ${{env.EXECUTABLE}}-macOS.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Configure MSVC
+        uses: ilammy/msvc-dev-cmd@v1.13.0
+        with:
+          arch: x64
+          spectre: true
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4.0.0
+        with:
+          version: "6.4.0"
+          install-deps: "true"
+          modules: "qtwebengine qtpositioning qtwebchannel"
+
+      - name: Install NSIS & OpenSSL
+        run: |
+          Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+          scoop bucket add extras
+          scoop install nsis
+          scoop install openssl
+
+      - name: Set OpenSSL path
+        run: |
+          $env:OPENSSL_ROOT_DIR="C:\Users\runner\scoop\apps\openssl\current"
+          $env:PATH="$env:OPENSSL_ROOT_DIR\bin;$env:PATH"
+
+      - name: Compile
+        run: |
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release OPENSSL_LIBS="-L%C:\Users\runner\scoop\apps\openssl\current\lib -lssl -lcrypto"
+          nmake
+
+      - name: Deploy
+        run: |
+          mkdir bin
+          move release/${{env.EXECUTABLE}}.exe bin
+          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime --openssl=C:\Users\runner\scoop\apps\openssl\current
+          mkdir "${{env.APPLICATION}}"
+          move bin "${{env.APPLICATION}}"
+          xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
+
+      - name: Make NSIS installer
+        run: |
+          mkdir -p deploy\windows\nsis\ 
+          move "${{env.APPLICATION}}" deploy\windows\nsis\ 
+          makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
+          move D:\a\NFOBuilder\NFOBuilder\NFOBuilder-windows.exe ${{env.EXECUTABLE}}-windows.exe
+
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v4.4.0
+        with:
+          name: ${{env.EXECUTABLE}}-windows.exe
+          path: D:\a\NFOBuilder\NFOBuilder\${{env.EXECUTABLE}}-windows.exe
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: recursive
+
+      - name: Set VERSION environment variable
+        run: echo "VERSION=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Download Linux AppImage
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{env.EXECUTABLE}}-linux.AppImage
+          path: release
+
+      - name: Download macOS ZIP
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{env.EXECUTABLE}}-macOS.zip
+          path: release
+
+      - name: Download Windows Installer
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: ${{env.EXECUTABLE}}-windows.exe
+          path: release
+
+      - name: Get PR Number
+        if: github.event_name == 'push' && github.ref.startsWith('refs/pull/')
+        run: |
+          PR_NUMBER=$(jq .pull_request.number < $GITHUB_EVENT_PATH)
+          echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+
+      - name: Comment on the Pull Request
+        if: github.event_name == 'push' && github.ref.startsWith('refs/pull/')
+        run: |
+          COMMENT_BODY="### Uploaded Files:\n- [Linux AppImage](./release/${{env.EXECUTABLE}}-linux.AppImage)\n- [macOS ZIP](./release/${{env.EXECUTABLE}}-macOS.zip)\n- [Windows Installer](./release/${{env.EXECUTABLE}}-windows.exe)"
+          curl -X POST -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
+            -d "{\"body\":\"$COMMENT_BODY\"}" \
+            https://api.github.com/repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          EXECUTABLE: ${{env.EXECUTABLE}}
