@@ -29,7 +29,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4.0.0
         with:
-          version: "6.5.0"
+          version: "6.4.0"
           install-deps: "true"
           modules: "qtwebengine qtpositioning qtwebchannel"
 
@@ -49,8 +49,7 @@ jobs:
         run: |
           export OPENSSL_ROOT_DIR=/usr
           export OPENSSL_LIB_DIR=/usr/lib/x86_64-linux-gnu
-          # export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
-          LD_LIBRARY_PATH=/usr/local/lib
+          export LD_LIBRARY_PATH=/usr/local/lib
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
           make -j8
 
