@@ -4,7 +4,7 @@ Create NFOs for theatrical performances compatible with Plex, to allow for full 
 ![OpenIssues](https://img.shields.io/github/issues-raw/pekempy/NFOBuilder?style=for-the-badge) ![GitHub](https://img.shields.io/github/license/pekempy/NFOBuilder?label=license&style=for-the-badge) ![GitHub last commit](https://img.shields.io/github/last-commit/pekempy/NFOBuilder?style=for-the-badge) ![Maintenance](https://img.shields.io/maintenance/yes/2024?style=for-the-badge)  ![GitHub](https://img.shields.io/badge/PLATFORM-LINUX%20%7C%20WINDOWS%20%7C%20MACOS-brightgreen?style=for-the-badge)
 
 # Requirements
-A Plex library with [XBMCnfoMoviesImporter](https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle) set as the agent  
+A Plex library with XBMCnfoMoviesImporter set as the agent [see Configuring your Plex Library](https://github.com/pekempy/NFOBuilder/wiki/Configuring-your-Plex-Library)    
 This allows Plex to look for local NFO files to fetch metadata from. You can also then "Match" with the NFO 
 For more details see [Wiki](https://github.com/pekempy/NFOBuilder/wiki)
 
