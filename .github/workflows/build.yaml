@@ -149,26 +149,24 @@ jobs:
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop bucket add extras
           scoop install nsis
-          scoop install openssl
-
-      - name: Set OpenSSL path
-        run: |
-          $env:OPENSSL_ROOT_DIR="C:\Users\runner\scoop\apps\openssl\current"
-          $env:PATH="$env:OPENSSL_ROOT_DIR\bin;$env:PATH"
 
       - name: Compile
         run: |
-          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release OPENSSL_LIBS="-L%C:\Users\runner\scoop\apps\openssl\current\lib -lssl -lcrypto"
+          qmake ${{env.QMAKE_PROJECT}} CONFIG+=release"
           nmake
 
       - name: Deploy
         run: |
           mkdir bin
           move release/${{env.EXECUTABLE}}.exe bin
-          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime --openssl=C:\Users\runner\scoop\apps\openssl\current
+          windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime
           mkdir "${{env.APPLICATION}}"
+          echo pwd/bin
+          dir bin
           move bin "${{env.APPLICATION}}"
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
+          pwd
+          dir
 
       - name: Make NSIS installer
         run: |
