@@ -31,6 +31,7 @@ using std::copy;
 string encoraID;
 string encoraIDURL;
 string showName;
+string showPoster;
 string showDirector;
 string showDate;
 string showYear;
@@ -111,6 +112,7 @@ string buildXML(){
                         "   <title>" + showName + "</title>\n"
                         "   <originaltitle>" + showName + "</originaltitle>\n"
                         "   <sorttitle>" + showName + "</sorttitle>\n"
+                        "   <thumb>" + showPoster + "</thumb>\n"
                         "   <premiered>" + showDate + "</premiered>\n"
                         "   <releasedate>" + showDate + "</releasedate>\n"
                         "   <director>" + showDirector + "</director>\n"
@@ -280,6 +282,12 @@ void MainWindow::on_showNameInput_textChanged(const QString &arg1)
     showName = arg1.toStdString();
 }
 
+void MainWindow::on_showPosterInput_textChanged(const QString &arg1)
+{
+    showPoster = arg1.toStdString();
+}
+
+
 void MainWindow::on_showDateInput_textChanged(const QString &arg1)
 {
     std::string arg1Str = arg1.toStdString(); // Convert once
@@ -325,6 +333,7 @@ void MainWindow::clearAllValues(){
 
     //clear global strings
     showName = "";
+    showPoster = "";
     showDate = "";
     showYear = "";
     showLocation = "";
@@ -336,6 +345,7 @@ void MainWindow::clearAllValues(){
     //clear UI values
     ui->encoraIDText->setText("");
     ui->showNameInput->setText("");
+    ui->showPosterInput->setText("");
     ui->showDateInput->setText("");
     ui->showLocationInput->setText("");
     ui->showMasterInput->setText("");

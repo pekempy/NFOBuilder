@@ -20,7 +20,7 @@
    <string>NFOBuilder for Plex</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="resources.qrc">
     <normaloff>:/resources/plex-nfo.ico</normaloff>:/resources/plex-nfo.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -115,21 +115,8 @@
       </item>
      </layout>
     </item>
-    <item row="4" column="0">
-     <widget class="Line" name="line_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Orientation::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="1">
-     <widget class="Line" name="line">
+     <widget class="Line" name="divider">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
         <horstretch>100</horstretch>
@@ -189,7 +176,7 @@
      </layout>
     </item>
     <item row="6" column="0" colspan="2">
-     <widget class="QScrollArea" name="scrollArea">
+     <widget class="QScrollArea" name="showDetailsScrollArea">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -205,7 +192,7 @@
          <x>0</x>
          <y>0</y>
          <width>833</width>
-         <height>616</height>
+         <height>647</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
@@ -229,14 +216,14 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="showDateLabel">
           <property name="text">
            <string>Performance Date</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QLineEdit" name="showDateInput">
           <property name="minimumSize">
            <size>
@@ -249,14 +236,14 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="showLocationLabel">
           <property name="text">
            <string>Location</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QLineEdit" name="showLocationInput">
           <property name="minimumSize">
            <size>
@@ -272,14 +259,14 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="showMasterLabel">
           <property name="text">
            <string>Master Name</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="4" column="1">
          <widget class="QLineEdit" name="showMasterInput">
           <property name="minimumSize">
            <size>
@@ -292,14 +279,14 @@
           </property>
          </widget>
         </item>
-        <item row="8" column="0">
+        <item row="9" column="0">
          <widget class="QLabel" name="showSynopsisLabel">
           <property name="text">
            <string>Synopsis</string>
           </property>
          </widget>
         </item>
-        <item row="9" column="0" colspan="2">
+        <item row="10" column="0" colspan="2">
          <widget class="QTextEdit" name="showSynopsisInput">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
@@ -318,22 +305,22 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="label_2">
+        <item row="7" column="0">
+         <widget class="QLabel" name="showNFTLabel">
           <property name="text">
            <string>Recording is NFT?</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="label">
+        <item row="6" column="0">
+         <widget class="QLabel" name="showGenreLabel">
           <property name="text">
            <string>Select Genres</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item row="6" column="1">
+         <layout class="QHBoxLayout" name="genreLayout">
           <property name="topMargin">
            <number>0</number>
           </property>
@@ -374,21 +361,21 @@
           </item>
          </layout>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <widget class="QCheckBox" name="isNFTCheckbox">
           <property name="text">
            <string>Currently NFT</string>
           </property>
          </widget>
         </item>
-        <item row="10" column="0">
+        <item row="11" column="0">
          <widget class="QLabel" name="CastLabel">
           <property name="text">
            <string>Cast Members</string>
           </property>
          </widget>
         </item>
-        <item row="11" column="0" colspan="2">
+        <item row="12" column="0" colspan="2">
          <widget class="QTableWidget" name="castTable">
           <property name="minimumSize">
            <size>
@@ -1276,6 +1263,20 @@
           </item>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="showPosterLabel">
+          <property name="text">
+           <string>Poster</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="showPosterInput">
+          <property name="placeholderText">
+           <string>The poster to display in Plex</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
@@ -1299,6 +1300,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

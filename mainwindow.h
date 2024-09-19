@@ -23,6 +23,7 @@ private slots:
 
     // textChanged events for the form
     void on_showNameInput_textChanged(const QString &arg1);
+    void on_showPosterInput_textChanged(const QString &arg1);
     void on_showDateInput_textChanged(const QString &arg1);
     void on_showLocationInput_textChanged(const QString &arg1);
     void on_showMasterInput_textChanged(const QString &arg1);
