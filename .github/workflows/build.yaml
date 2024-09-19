@@ -144,7 +144,7 @@ jobs:
           install-deps: "true"
           modules: "qtwebengine qtpositioning qtwebchannel"
 
-      - name: Install NSIS & OpenSSL
+      - name: Install NSIS
         run: |
           Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
           scoop bucket add extras
@@ -157,6 +157,7 @@ jobs:
 
       - name: Deploy
         run: |
+          mkdir bin
           move release/${{env.EXECUTABLE}}.exe bin
           windeployqt bin/${{env.EXECUTABLE}}.exe --compiler-runtime
           mkdir "${{env.APPLICATION}}"
@@ -168,7 +169,7 @@ jobs:
           mkdir -p deploy\windows\nsis\ 
           move "${{env.APPLICATION}}" deploy\windows\nsis\ 
           pwd
-          dir deploy\windows\nsis
+          dir NFOBuilder
           makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
           move D:\a\NFOBuilder\NFOBuilder\NFOBuilder-windows.exe ${{env.EXECUTABLE}}-windows.exe
 
