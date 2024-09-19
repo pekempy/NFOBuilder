@@ -168,15 +168,15 @@ void MainWindow::on_actionLoad_NFO_triggered()
                 string actorName = "";
                 string characterName = "";
                 string headshot = "";
-                while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == "actor")) {
+                while(!(xml.tokenType() == QXmlStreamReader::EndElement && xml.name() == QStringLiteral("actor"))) {
                     if(xml.isStartElement()) {
-                        if(xml.name() == "name") {
+                        if(xml.name() == QStringLiteral("name")) {
                             actorName = xml.readElementText().toStdString();
                         }
-                        if(xml.name() == "role") {
+                        if(xml.name() == QStringLiteral("role")) {
                             characterName = xml.readElementText().toStdString();
                         }
-                        if(xml.name() == "thumb") {
+                        if(xml.name() == QStringLiteral("thumb")) {
                             headshot = xml.readElementText().toStdString();
                         }
                     }
