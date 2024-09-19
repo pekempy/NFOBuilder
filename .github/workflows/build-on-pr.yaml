@@ -1,12 +1,7 @@
 name: Build
 on:
   pull_request:
-    types:
-      - synchronize
-      - opened
-      - reopened
-    branches:
-      - "*"
+    types: [opened, synchronize, reopened]
 
 env:
   EXECUTABLE: "NFO-Creator"
