@@ -676,12 +676,15 @@ void MainWindow::on_encoraLookupButton_clicked()
     QString APIShowName = obj["show"].toString();
     QString APIShowTour = obj["tour"].toString();
     QString recordingMaster = obj["master"].toString();
+    QString APIShowDescription = obj.value("metadata").toObject().value("show_description").toString();
     showName = APIShowName.toStdString();
     showLocation = APIShowTour.toStdString();
     showDirector = recordingMaster.toStdString();
+    showPlot = APIShowDescription.toStdString();
     ui->showNameInput->setText(APIShowName);
     ui->showMasterInput->setText(recordingMaster);
     ui->showLocationInput->setText(APIShowTour);
+    ui->showSynopsisInput->setText(APIShowDescription);
 
     // Extract date details
     QJsonObject apiDate = obj["date"].toObject();
@@ -743,7 +746,10 @@ void MainWindow::on_encoraLookupButton_clicked()
     ui->checkbox_musical->setStyleSheet("border: 1px solid red");
     ui->checkbox_play->setStyleSheet("border: 1px solid red");
     ui->checkbox_ballet->setStyleSheet("border: 1px solid red");
-    ui->showSynopsisInput->setStyleSheet("border: 1px solid red");
+
+    if (ui->showSynopsisInput->toPlainText() == "") {
+        ui->showSynopsisInput->setStyleSheet("border: 1px solid red");
+    }
 
     // Extract recording type and update checkboxes
     QJsonObject metadata = obj["metadata"].toObject();
