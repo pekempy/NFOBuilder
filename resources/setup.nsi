@@ -1,6 +1,6 @@
 ; Define the application name, version, and the output file
 !define APP_NAME "NFOBuilder"
-!define APP_VERSION "1.3.2"
+!define APP_VERSION "1.3.5"
 !define INSTALLER_NAME "${APP_NAME}-windows.exe"
 
 Name "${APP_NAME} Setup"

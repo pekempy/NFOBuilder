@@ -40,5 +40,5 @@ DISTFILES += \
 RESOURCES += \
     resources.qrc
 
-VERSION = 1.3.2
+VERSION = 1.3.5
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
