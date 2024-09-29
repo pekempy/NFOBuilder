@@ -225,6 +225,8 @@ QString MainWindow::getDataFromURL(){
     QNetworkAccessManager manager;
     QNetworkRequest request = QNetworkRequest(QUrl(QString::fromStdString(encoraIDURL)));
     request.setRawHeader(QByteArray("Authorization"), QByteArray("Bearer " + QByteArray::fromStdString(encoraAPIKey)));
+    QString userAgent = QString("NFOBuilder/%1").arg(APP_VERSION);
+    request.setRawHeader("User-Agent", userAgent.toUtf8());
     QNetworkReply *response = manager.get(request);
     QEventLoop event;
     connect(response, SIGNAL(finished()), &event, SLOT(quit()));
