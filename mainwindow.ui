@@ -189,10 +189,10 @@
       <widget class="QWidget" name="scrollAreaWidgetContents_2">
        <property name="geometry">
         <rect>
-         <x>0</x>
+         <x>-5</x>
          <y>0</y>
-         <width>833</width>
-         <height>647</height>
+         <width>838</width>
+         <height>654</height>
         </rect>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
@@ -455,7 +455,12 @@
           </column>
           <column>
            <property name="text">
-            <string>CLICK to search images</string>
+            <string>STAGEMEDIA search</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>GOOGLE search</string>
            </property>
           </column>
           <item row="0" column="0">
@@ -476,7 +481,7 @@
             <string/>
            </property>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <property name="text">
             <string/>
            </property>
@@ -496,7 +501,7 @@
             <string/>
            </property>
           </item>
-          <item row="1" column="3">
+          <item row="1" column="4">
            <property name="text">
             <string/>
            </property>
@@ -516,7 +521,7 @@
             <string/>
            </property>
           </item>
-          <item row="2" column="3">
+          <item row="2" column="4">
            <property name="text">
             <string/>
            </property>
@@ -536,7 +541,7 @@
             <string/>
            </property>
           </item>
-          <item row="3" column="3">
+          <item row="3" column="4">
            <property name="text">
             <string/>
            </property>
@@ -556,7 +561,7 @@
             <string/>
            </property>
           </item>
-          <item row="4" column="3">
+          <item row="4" column="4">
            <property name="text">
             <string/>
            </property>
@@ -576,7 +581,7 @@
             <string/>
            </property>
           </item>
-          <item row="5" column="3">
+          <item row="5" column="4">
            <property name="text">
             <string/>
            </property>
@@ -596,7 +601,7 @@
             <string/>
            </property>
           </item>
-          <item row="6" column="3">
+          <item row="6" column="4">
            <property name="text">
             <string/>
            </property>
@@ -616,7 +621,7 @@
             <string/>
            </property>
           </item>
-          <item row="7" column="3">
+          <item row="7" column="4">
            <property name="text">
             <string/>
            </property>
@@ -636,7 +641,7 @@
             <string/>
            </property>
           </item>
-          <item row="8" column="3">
+          <item row="8" column="4">
            <property name="text">
             <string/>
            </property>
@@ -656,7 +661,7 @@
             <string/>
            </property>
           </item>
-          <item row="9" column="3">
+          <item row="9" column="4">
            <property name="text">
             <string/>
            </property>
@@ -676,7 +681,7 @@
             <string/>
            </property>
           </item>
-          <item row="10" column="3">
+          <item row="10" column="4">
            <property name="text">
             <string/>
            </property>
@@ -696,7 +701,7 @@
             <string/>
            </property>
           </item>
-          <item row="11" column="3">
+          <item row="11" column="4">
            <property name="text">
             <string/>
            </property>
@@ -716,7 +721,7 @@
             <string/>
            </property>
           </item>
-          <item row="12" column="3">
+          <item row="12" column="4">
            <property name="text">
             <string/>
            </property>
@@ -736,7 +741,7 @@
             <string/>
            </property>
           </item>
-          <item row="13" column="3">
+          <item row="13" column="4">
            <property name="text">
             <string/>
            </property>
@@ -756,7 +761,7 @@
             <string/>
            </property>
           </item>
-          <item row="14" column="3">
+          <item row="14" column="4">
            <property name="text">
             <string/>
            </property>
@@ -776,7 +781,7 @@
             <string/>
            </property>
           </item>
-          <item row="15" column="3">
+          <item row="15" column="4">
            <property name="text">
             <string/>
            </property>
@@ -796,7 +801,7 @@
             <string/>
            </property>
           </item>
-          <item row="16" column="3">
+          <item row="16" column="4">
            <property name="text">
             <string/>
            </property>
@@ -816,7 +821,7 @@
             <string/>
            </property>
           </item>
-          <item row="17" column="3">
+          <item row="17" column="4">
            <property name="text">
             <string/>
            </property>
@@ -836,7 +841,7 @@
             <string/>
            </property>
           </item>
-          <item row="18" column="3">
+          <item row="18" column="4">
            <property name="text">
             <string/>
            </property>
@@ -856,7 +861,7 @@
             <string/>
            </property>
           </item>
-          <item row="19" column="3">
+          <item row="19" column="4">
            <property name="text">
             <string/>
            </property>
@@ -876,7 +881,7 @@
             <string/>
            </property>
           </item>
-          <item row="20" column="3">
+          <item row="20" column="4">
            <property name="text">
             <string/>
            </property>
@@ -896,7 +901,7 @@
             <string/>
            </property>
           </item>
-          <item row="21" column="3">
+          <item row="21" column="4">
            <property name="text">
             <string/>
            </property>
@@ -916,7 +921,7 @@
             <string/>
            </property>
           </item>
-          <item row="22" column="3">
+          <item row="22" column="4">
            <property name="text">
             <string/>
            </property>
@@ -936,7 +941,7 @@
             <string/>
            </property>
           </item>
-          <item row="23" column="3">
+          <item row="23" column="4">
            <property name="text">
             <string/>
            </property>
@@ -956,7 +961,7 @@
             <string/>
            </property>
           </item>
-          <item row="24" column="3">
+          <item row="24" column="4">
            <property name="text">
             <string/>
            </property>
@@ -976,7 +981,7 @@
             <string/>
            </property>
           </item>
-          <item row="25" column="3">
+          <item row="25" column="4">
            <property name="text">
             <string/>
            </property>
@@ -996,7 +1001,7 @@
             <string/>
            </property>
           </item>
-          <item row="26" column="3">
+          <item row="26" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1016,7 +1021,7 @@
             <string/>
            </property>
           </item>
-          <item row="27" column="3">
+          <item row="27" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1036,7 +1041,7 @@
             <string/>
            </property>
           </item>
-          <item row="28" column="3">
+          <item row="28" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1056,7 +1061,7 @@
             <string/>
            </property>
           </item>
-          <item row="29" column="3">
+          <item row="29" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1076,7 +1081,7 @@
             <string/>
            </property>
           </item>
-          <item row="30" column="3">
+          <item row="30" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1096,7 +1101,7 @@
             <string/>
            </property>
           </item>
-          <item row="31" column="3">
+          <item row="31" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1116,7 +1121,7 @@
             <string/>
            </property>
           </item>
-          <item row="32" column="3">
+          <item row="32" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1136,7 +1141,7 @@
             <string/>
            </property>
           </item>
-          <item row="33" column="3">
+          <item row="33" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1156,7 +1161,7 @@
             <string/>
            </property>
           </item>
-          <item row="34" column="3">
+          <item row="34" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1176,7 +1181,7 @@
             <string/>
            </property>
           </item>
-          <item row="35" column="3">
+          <item row="35" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1196,7 +1201,7 @@
             <string/>
            </property>
           </item>
-          <item row="36" column="3">
+          <item row="36" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1216,7 +1221,7 @@
             <string/>
            </property>
           </item>
-          <item row="37" column="3">
+          <item row="37" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1236,7 +1241,7 @@
             <string/>
            </property>
           </item>
-          <item row="38" column="3">
+          <item row="38" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1256,7 +1261,7 @@
             <string/>
            </property>
           </item>
-          <item row="39" column="3">
+          <item row="39" column="4">
            <property name="text">
             <string/>
            </property>
@@ -1290,7 +1295,7 @@
      <x>0</x>
      <y>0</y>
      <width>867</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

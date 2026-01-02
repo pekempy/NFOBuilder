@@ -54,6 +54,7 @@ compile_commands.json
 *_qmlcache.qrc
 .qtc_clangd
 .qtc_clangd/*
+build/*
 
 # MacOS
 *.DS_Store

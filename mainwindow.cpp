@@ -508,82 +508,119 @@ void MainWindow::clearAllValues(){
 void MainWindow::on_castTable_cellChanged(int row, int column)
 {
     string test;
-    // When actor/actress name changed, update URL for google search
-    if(column == 0) {
-        for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
-            if (i == row && column != 3) {
-                QTableWidgetItem * cellLink = ui -> castTable -> item(i, 3);
-                if(!cellLink){
-                    cellLink = new QTableWidgetItem();
-                    ui -> castTable -> setItem(i,3,cellLink);
-                }
-                QTableWidgetItem * actor = ui -> castTable -> item(i, 0);
-                string actorName = actor->text().toStdString();
-                string url = "https://google.com/search?tbm=isch&q=actor+headshot+-+" + actorName;
-                cellLink->setText(QString::fromStdString(url));
-            }
-        }
-        QString headshotsFilePath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + headshotsFileName;
-        QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
+    constexpr int COL_NAME        = 0;
+    constexpr int COL_HEADSHOT    = 2;
+    constexpr int COL_STAGEMEDIA  = 3;
+    constexpr int COL_GOOGLE_URL  = 4;
 
-        QTableWidgetItem * performer = ui -> castTable -> item(row, 0);
-        QString performerName = performer->text();
+    // When actor/actress name changed, update URL for google search / stagemedia search
+    if (column != COL_NAME)
+        return;
 
-        QTableWidgetItem * headshotCell = ui -> castTable -> item(row, 2);
-        if(performerName.isEmpty()) {
-            headshotCell->setText(QString::fromStdString(""));
-        } else if(headshots.keys().contains(performerName)) {
-            QJsonValueRef headshot = headshots[performerName];
-            headshotCell->setText(headshot.toString());
-        } else {
-            headshotCell->setText(QString::fromStdString(""));
-        }
+    QTableWidgetItem *actorItem = ui->castTable->item(row, COL_NAME);
+    if (!actorItem)
+        return;
+
+    QString actorName = actorItem->text().trimmed();
+
+    // --- Google Image Search URL ---
+    QTableWidgetItem *googleCell = ui->castTable->item(row, COL_GOOGLE_URL);
+    if (!googleCell) {
+        googleCell = new QTableWidgetItem();
+        ui->castTable->setItem(row, COL_GOOGLE_URL, googleCell);
     }
 
-    if(column == 2) {
-        QString headshotsFilePath = QStandardPaths::writableLocation((QStandardPaths::AppDataLocation)) + "/" + headshotsFileName;
+    QString googleUrl =
+        "https://google.com/search?tbm=isch&q=actor+headshot+-+" +
+        QUrl::toPercentEncoding(actorName);
+    googleCell->setText(googleUrl);
+
+    // --- StageMedia Search URL ---
+    QTableWidgetItem *stageMediaCell = ui->castTable->item(row, COL_STAGEMEDIA);
+    if (!stageMediaCell) {
+        stageMediaCell = new QTableWidgetItem();
+        ui->castTable->setItem(row, COL_STAGEMEDIA, stageMediaCell);
+    }
+
+    QString stageMediaUrl =
+        "https://stagemedia.me/performers?tableSearch=" +
+        QUrl::toPercentEncoding(actorName);
+    stageMediaCell->setText(stageMediaUrl);
+
+    // --- Headshot lookup ---
+    QString headshotsFilePath =
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) +
+        "/" + headshotsFileName;
+
+    QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
+
+    QTableWidgetItem *headshotCell = ui->castTable->item(row, COL_HEADSHOT);
+    if (!headshotCell)
+        return;
+
+    if (actorName.isEmpty()) {
+        headshotCell->setText("");
+    } else if (headshots.contains(actorName)) {
+        headshotCell->setText(headshots[actorName].toString());
+    } else {
+        headshotCell->setText("");
+    }
+
+    if (column == 2) {
+        QString headshotsFilePath =
+            QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+            + "/" + headshotsFileName;
+
         QJsonObject headshots = getHeadshotsFile(headshotsFilePath);
 
-        QTableWidgetItem * actor = ui -> castTable -> item(row, 0);
-        QString actorName = actor->text();
+        QTableWidgetItem *actorItem = ui->castTable->item(row, 0);
+        QTableWidgetItem *headshotCell = ui->castTable->item(row, 2);
 
-        if(actorName.isEmpty()) {
+        if (!actorItem || !headshotCell)
             return;
-        }
 
-        QTableWidgetItem * headshotCell = ui -> castTable -> item(row, 2);
-        QString headshotText = headshotCell->text();
+        QString actorName = actorItem->text().trimmed();
+        QString headshotText = headshotCell->text().trimmed();
 
-        if(!headshots.keys().contains(actorName) && !headshotText.isEmpty()) {
-            headshots[actorName] = headshotText;
-            setHeadshotsFile(headshots, headshotsFilePath);
+        if (actorName.isEmpty())
+            return;
+
+        bool changed = false;
+
+        if (headshotText.isEmpty()) {
+            if (headshots.contains(actorName)) {
+                headshots.remove(actorName);
+                changed = true;
+            }
         } else {
-            if(headshots[actorName] != headshotText) {
-                if(headshotText.isEmpty()) {
-                    headshots.remove(actorName);
-                } else {
-                    headshots[actorName] = headshotText;
-                }
-                setHeadshotsFile(headshots, headshotsFilePath);
+            QString existing = headshots.value(actorName).toString();
+            if (existing != headshotText) {
+                headshots[actorName] = headshotText;
+                changed = true;
             }
         }
 
-        for (int i = 0; i < ui-> castTable -> rowCount(); i++) {
-            if(i == row) {
+        if (changed) {
+            setHeadshotsFile(headshots, headshotsFilePath);
+        }
+
+        // Sync headshot to other rows with same actor name
+        for (int i = 0; i < ui->castTable->rowCount(); ++i) {
+            if (i == row)
                 continue;
-            }
-            QTableWidgetItem * nextActor = ui -> castTable -> item(i, 0);
-            QString nextActorName = nextActor->text();
-            if(nextActorName == actorName) {
-                QTableWidgetItem * nextHeadshotCell = ui -> castTable -> item(i, 2);
-                QString nextHeadshotText = nextHeadshotCell->text();
-                if(nextHeadshotText != headshotText) {
-                    nextHeadshotCell->setText(headshotText);
-                }
+
+            QTableWidgetItem *otherActor = ui->castTable->item(i, 0);
+            QTableWidgetItem *otherHeadshot = ui->castTable->item(i, 2);
+
+            if (!otherActor || !otherHeadshot)
+                continue;
+
+            if (otherActor->text() == actorName &&
+                otherHeadshot->text() != headshotText) {
+                otherHeadshot->setText(headshotText);
             }
         }
     }
-    ui->castTable->viewport()->update();
 }
 
 // Genre Checkbox functions
@@ -770,7 +807,7 @@ void MainWindow::on_encoraLookupButton_clicked()
 void MainWindow::on_castTable_cellClicked(int row, int column)
 {
     string urlToOpen = "";
-    if(column == 3){
+    if(column == 3 || column == 4){
         urlToOpen = ui->castTable->item(row,column)->text().toStdString();
     }
     if (urlToOpen != ""){
