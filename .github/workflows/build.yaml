@@ -15,17 +15,11 @@ jobs:
   build-linux:
     runs-on: ubuntu-20.04
     steps:
-      #
-      # Checkout the repository
-      #
       - name: Checkout repository and submodules
         uses: actions/checkout@v4.1.7
         with:
           submodules: recursive
 
-      #
-      # Install Qt
-      #
       - name: Install Qt
         uses: jurplel/install-qt-action@v4.0.0
         with:
@@ -33,18 +27,13 @@ jobs:
           install-deps: "true"
           modules: "qtwebengine qtpositioning qtwebchannel"
 
-      #
       # Install additional dependencies, stolen from:
       # https://github.com/mapeditor/tiled/blob/master/.github/workflows/packages.yml
-      #
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install libssl1.1 libssl-dev dos2unix libfuse-dev libgl1-mesa-dev libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0 libzstd-dev
 
-      #
-      # Compile the application
-      #
       - name: Compile
         run: |
           export OPENSSL_ROOT_DIR=/usr
@@ -53,9 +42,6 @@ jobs:
           qmake ${{env.QMAKE_PROJECT}} CONFIG+=release PREFIX=/usr
           make -j8
 
-      #
-      # Create the AppImage
-      # -qmldir="${{env.QML_DIR_NIX}}" from line 75
       - name: Create AppImage
         run: |
           pwd
@@ -67,15 +53,9 @@ jobs:
           cp resources/plex-nfo.png /home/runner/work/NFOBuilder/NFOBuilder/appdir/opt/default.png
           ./linuxdeployqt resources/*.desktop -appimage -bundle-non-qt-libs -extra-plugins=imageformats/libqsvg.so
 
-      #
-      # Rename AppImage to match "%AppName%-%Version%-Linux.AppImage" format
-      #
       - name: Rename AppImage
         run: mv *.AppImage ${{env.EXECUTABLE}}-linux.AppImage
 
-      #
-      # Upload AppImage to build artifacts
-      #
       - name: Upload AppImage
         uses: actions/upload-artifact@v4.4.0
         with:
@@ -165,12 +145,16 @@ jobs:
           xcopy resources\plex-nfo.ico "${{env.APPLICATION}}"
 
       - name: Make NSIS installer
+        shell: powershell
         run: |
-          mkdir -p deploy\windows\nsis\ 
-          move "${{env.APPLICATION}}" deploy\windows\nsis\ 
+          mkdir -p deploy\windows\nsis\
+          move "${{env.APPLICATION}}" deploy\windows\nsis\
           dir deploy\windows\nsis\NFOBuilder
-          makensis /X"SetCompressor /FINAL lzma" D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
-          move D:\a\NFOBuilder\NFOBuilder\NFOBuilder-windows.exe ${{env.EXECUTABLE}}-windows.exe
+          & "$env:USERPROFILE\scoop\shims\makensis.exe" `
+            /X"SetCompressor /FINAL lzma" `
+            D:\a\NFOBuilder\NFOBuilder\resources\setup.nsi
+          move D:\a\NFOBuilder\NFOBuilder\NFOBuilder-windows.exe `
+              ${{env.EXECUTABLE}}-windows.exe
 
       - name: Upload NSIS installer
         uses: actions/upload-artifact@v4.4.0
